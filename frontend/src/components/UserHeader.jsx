@@ -24,16 +24,39 @@ const UserHeader = () => {
     <VStack spacing={4} alignItems='start'>
         <Flex justifyContent={'space-between'} w={'full'}>
             <Box>
-                <Text fontSize={'2xl'} fontWeight={'bold'}>Snehashis Dasgupta</Text>
+                {/* NAME */}
+                <Text fontSize={{
+                    base: "md",
+                    md: "xl",
+                    'lg': "2xl",
+                }} fontWeight={'bold'}>Snehashis Dasgupta</Text>
+
+                {/* USERNAME */}
                 <Flex gap={2} alignItems={"center"}>
-                    <Text fontSize={'sm'}>dasguptasnehashis</Text>
-                    <Text fontSize={'xs'} bg={'gray.dark'} color={"gray.light"} p={1} borderRadius={'full'}>
+                    <Text fontSize={{
+                        base: "xs",
+                        md: "sm",
+                        'lg': "md"
+                    }}>dasguptasnehashis</Text>
+
+                    {/* thread.net */}
+                    <Text fontSize={{
+                        base: "xs",
+                        md: "sm",
+                        'lg': "md",
+                    }} bg={'gray.dark'} color={"gray.light"} p={1} borderRadius={'full'}>
                         threads.net
                     </Text>
                 </Flex>
             </Box>
             <Box>
-                <Avatar name="Mark Zukerberg" src="/avatar.jpg" size={'xl'} />
+                <Avatar name="Mark Zukerberg" src="/avatar.jpg" size={
+                    // profilePic changes size with screen ratio
+                    {
+                        base: "lg",
+                        md: "xl",
+                    }
+                } />
             </Box>
         </Flex>
 

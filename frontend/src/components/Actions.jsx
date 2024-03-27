@@ -1,6 +1,5 @@
 import { Flex } from "@chakra-ui/react";
 
-// eslint-disable-next-line react/prop-types
 const Actions = ({ liked, setLiked }) => {
     return (
         <Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
