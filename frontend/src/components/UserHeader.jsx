@@ -24,16 +24,16 @@ const UserHeader = () => {
     <VStack spacing={4} alignItems='start'>
         <Flex justifyContent={'space-between'} w={'full'}>
             <Box>
-                <Text fontSize={'2xl'} fontWeight={'bold'}>Mark Zukerberg</Text>
+                <Text fontSize={'2xl'} fontWeight={'bold'}>Snehashis Dasgupta</Text>
                 <Flex gap={2} alignItems={"center"}>
-                    <Text fontSize={'sm'}>markzukerberg</Text>
+                    <Text fontSize={'sm'}>dasguptasnehashis</Text>
                     <Text fontSize={'xs'} bg={'gray.dark'} color={"gray.light"} p={1} borderRadius={'full'}>
                         threads.net
                     </Text>
                 </Flex>
             </Box>
             <Box>
-                <Avatar name="Mark Zukerberg" src="/zuck-avatar.png" size={'xl'} />
+                <Avatar name="Mark Zukerberg" src="/avatar.jpg" size={'xl'} />
             </Box>
         </Flex>
 
@@ -50,6 +50,7 @@ const UserHeader = () => {
                 <Box className="icon-container">
                     <BsInstagram size={24} cursor={'pointer'} />         
                 </Box>
+                {/* ThreeDot icon for coping the profile link */}
                 <Box className="icon-container">
                     <Menu>
                         <MenuButton>
@@ -65,6 +66,7 @@ const UserHeader = () => {
             </Flex>
         </Flex>
 
+        {/* Navigation menu for threads and replies */}
         <Flex w={'full'}>
             <Flex flex={1} borderBottom={"1.5px solid white"} justifyContent={"center"} pb={"3"} cursor={"pointer"}>
                 <Text fontWeight={"bold"}> Threads </Text>
