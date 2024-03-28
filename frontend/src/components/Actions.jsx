@@ -13,6 +13,7 @@ const Actions = ({ liked, setLiked }) => {
                 role='img'
                 viewBox='0 0 24 22'
                 width='20'
+                cursor={"pointer"}
                 onClick={() => setLiked(!liked)}
             >
                 {/* when mouse is hovered, text is shown */}
@@ -31,6 +32,7 @@ const Actions = ({ liked, setLiked }) => {
                 role='img'
                 viewBox='0 0 24 24'
                 width='20'
+                cursor={"pointer"}
             >
                 {/* when mouse is hovered, text is shown */}
                 <title>Comment</title>
@@ -52,7 +54,7 @@ const Actions = ({ liked, setLiked }) => {
                 role='img'
                 viewBox='0 0 24 24'
                 width='20'
-
+                cursor={"pointer"}
             >
                 {/* when mouse is hovered, text is shown */}
                 <title>Repost</title>
@@ -71,6 +73,7 @@ const Actions = ({ liked, setLiked }) => {
                 role='img'
                 viewBox='0 0 24 24'
                 width='20'
+                cursor={"pointer"}
             >
                 {/* when mouse is hovered, text is shown */}
                 <title>Share</title>

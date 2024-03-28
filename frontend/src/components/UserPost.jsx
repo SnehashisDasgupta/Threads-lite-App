@@ -9,17 +9,14 @@ const UserPost = ({ likes, replies, postImg, postTitle }) => {
   const toast = useToast();
 
   const postSave = () => {
-    const currentURL = window.location.href;
-        navigator.clipboard.writeText(currentURL).then(() => {
-            // show a pop-up message
-            toast({
-                description: "Saved post.",
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-        });
-  }
+    // show a pop-up message
+    toast({
+        description: "Saved post.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+    });    
+  };
 
   return (
     <Link to={"/dasguptasnehashis/post/001"}>

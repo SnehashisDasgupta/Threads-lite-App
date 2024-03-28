@@ -8,7 +8,7 @@ import Header from "./components/Header";
 function App() {
 
   return (
-    <Container maxW='45%'>
+    <Container maxW='620px'>
       <Header />
       <Routes>
         <Route path="/:username" element={ <UserPage /> } />
