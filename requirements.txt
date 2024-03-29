@@ -1,3 +1,9 @@
+# FRONTEND
 npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion
 
 npm i react-router-dom react-icons
+
+# BACKEND
+npm i express jsonwebtoken bcryptjs dotenv mongoose cookie-parser
+
+npm i -D nodemon

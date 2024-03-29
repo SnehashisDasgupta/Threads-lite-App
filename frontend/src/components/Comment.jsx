@@ -30,6 +30,7 @@ const Comment = ({ userAvatar, username, comment, likes, createdAt}) => {
                 <Text>{ comment }</Text>
                 {/* like, comment, repost, share icons */}
                 <Actions liked={liked} setLiked={setLiked} />
+                
                 <Text fontSize={"sm"} color={"gray.light"}>
                     {likes + (liked ? 1 : 0)} likes
                 </Text>
