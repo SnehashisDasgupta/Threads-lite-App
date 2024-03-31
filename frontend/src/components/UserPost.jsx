@@ -45,6 +45,7 @@ const UserPost = ({ likes, replies, postImg, postTitle }) => {
                         </Text>
                         <Image src="/verified.png" w={4} h={4} ml={1} />
                     </Flex>
+                    
                     {/* time[when the post is uploaded] and threeDots */}
                     <Flex gap={4} alignItems={"center"}>
                         <Text fontSize={"sm"} color={"gray.light"}>

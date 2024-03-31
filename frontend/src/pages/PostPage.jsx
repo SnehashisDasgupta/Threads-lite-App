@@ -10,7 +10,7 @@ const PostPage = () => {
   const { loader } = useGetLoader();
   const [liked, setLiked] = useState(false);
   const toast = useToast();
-  
+
 
   const postSave = () => {
     // show a pop-up message
@@ -24,31 +24,31 @@ const PostPage = () => {
 
   return (
     <>
-      <Flex my={5}>
-        <Flex w={"full"} alignItems={"center"} gap={3}>
-          {/* ProfilePic */}
-          <Avatar src="/avatar.jpg" size={"md"} name="Snehashis Dasgupta" />
-          <Flex>
-            {/* username */}
-            <Text fontSize={"sm"} fontWeight={"bold"}>
-              dasguptasnehashis
-            </Text>
-            {/* BlueTick */}
-            <Image src="/verified.png" w={4} h={4} ml={4} />
-          </Flex>
-        </Flex>
-
-        <Flex gap={4} alignItems={"center"}>
-          <Text fontSize={"sm"} color={"gray.light"}>1d</Text>
-          <FaRegBookmark cursor={"pointer"} onClick={() => { postSave(); }} />
-        </Flex>
-      </Flex>
-
-      {loader && [...Array(3)].map((_, idx) => <Loader key={idx} />)}
-
-
+      {loader && [...Array(1)].map((_, idx) => <Loader key={idx} />)}
       {!loader && (
         <>
+          <Flex my={5}>
+            <Flex w={"full"} alignItems={"center"} gap={3}>
+              {/* ProfilePic */}
+              <Avatar src="/avatar.jpg" size={"md"} name="Snehashis Dasgupta" />
+              <Flex>
+                {/* username */}
+                <Text fontSize={"sm"} fontWeight={"bold"}>
+                  dasguptasnehashis
+                </Text>
+                {/* BlueTick */}
+                <Image src="/verified.png" w={4} h={4} ml={4} />
+              </Flex>
+            </Flex>
+
+            <Flex gap={4} alignItems={"center"}>
+              <Text fontSize={"sm"} color={"gray.light"}>1d</Text>
+              <FaRegBookmark cursor={"pointer"} onClick={() => { postSave(); }} />
+            </Flex>
+          </Flex>
+
+
+
 
           <Text py={1} my={2} fontSize={"sm"}>postTitle</Text>
           <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>

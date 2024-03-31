@@ -1,32 +1,37 @@
-import { Box, Flex, Skeleton } from "@chakra-ui/react";
+import { Avatar, Flex, Skeleton } from "@chakra-ui/react";
 
-const Loader = () => {
+const ThreadSkeleton = () => {
   return (
-    <Box maxW="600px" mx="auto" p="4">
-      {/* Header */}
-      <Flex alignItems="center" mb="4">
-        <Skeleton mr="2" circle size="10" />
+
+    <Flex gap={3} mb={4} py={5} w={"full"}>
+
+      <Flex flex={1} flexDirection={"column"} gap={2}>
+        <Flex alignItems={"center"} w={"full"} mb={4}>
+
+          {/* admin user profilePic Skeleton */}
+          <Avatar size={"md"} />
+          {/* username Skeleton */}
+          <Skeleton ml="2" h="5" w={"160px"} borderRadius={6} />
+
+        </Flex>
+
+        {/* Post Title */}
+        <Skeleton h="8" mb="2" borderRadius={6} />
+
+        {/* Post Image Skeleton */}
+        <Skeleton mb="2" h="300px" w={"full"} borderRadius={6} />
+
+        {/* Action icons skeletons */}
+        <Flex justifyContent="space-between" alignItems="center" mb="2">
+          <Skeleton h="6" w="30%" />
+        </Flex>
+
+        {/* Comment section Skeleton */}
+        <Skeleton h="12" mb="2" borderRadius={6} />
+
       </Flex>
-      {/* Post */}
-      <Flex alignItems="center" mb="4">
-        <Skeleton mr="4" circle size="10" />
-        <Skeleton flex="1" h="10" />
-      </Flex>
-      {/* Post Image */}
-      <Skeleton mb="4" h="300px" />
-      {/* Post Actions */}
-      <Flex alignItems="center" mb="4">
-        <Skeleton mr="2" circle size="6" />
-        <Skeleton mr="2" circle size="6" />
-        <Skeleton mr="2" circle size="6" />
-      </Flex>
-      {/* Likes and Comments */}
-      <Flex alignItems="center">
-        <Skeleton mr="2" h="6" w="24" />
-        {/* <Skeleton mr="2" h="6" w="24" /> */}
-      </Flex>
-    </Box>
+    </Flex>
   );
 };
 
-export default Loader;
+export default ThreadSkeleton;

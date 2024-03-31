@@ -9,7 +9,7 @@ const UserPage = () => {
     <>
       <UserHeader />
 
-      {loader && [...Array(3)].map((_, idx) => <Loader key={idx} />)}
+      {loader && [...Array(2)].map((_, idx) => <Loader key={idx} />)}
 
       {!loader && (
         <>
