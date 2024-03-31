@@ -1,5 +1,6 @@
 import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
+import generateTokenAndSetCookie from '../utils/generateTokenAndSetCookie.js';
 
 const signupUser = async (req, res) => {
     try {
@@ -27,6 +28,9 @@ const signupUser = async (req, res) => {
         await newUser.save();
 
         if (newUser){
+            // It generates a token for the newly created user's ID and sets it as a cookie in the response object (res).
+            generateTokenAndSetCookie(newUser._id, res);
+
             res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
@@ -44,4 +48,28 @@ const signupUser = async (req, res) => {
     }
 };
 
-export { signupUser };
+const loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        // compare given_password with database_password
+        const isPasswordCorrect = await bcrypt.compare(password, user?.password || ""); 
+
+        if (!user || !isPasswordCorrect) return res.status(400).json({ message: "Invalid username or password" });
+
+        generateTokenAndSetCookie(user._id, res);
+
+        res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            username: user.username,
+        });
+        
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.log("Error in loginUser: ", error.message);
+    }
+};
+
+export { signupUser, loginUser };
