@@ -5,8 +5,8 @@ import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
-
 connectDB(); // MongoDB connection
+
 const app = express();
 
 const PORT = process.env.PORT || 5000;
