@@ -28,6 +28,22 @@ const createPost = async (req, res) => {
         res.status(500).json({ message: err.message });
         console.log(err);
     }
-}
+};
 
-export { createPost };
+const getPost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        if(!post){
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        res.status(200).json({ post });
+        
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log("Error in getPost: ", err.message);
+    }
+};
+
+export { createPost, getPost };
