@@ -7,7 +7,7 @@ const protectRoute = async (req, res, next) => {
         // to access the JWT token sent by the client in a cookie named "jwtToken" within the middleware
         const token = req.cookies.jwt;
 
-        if (!token) return res.status(401).json({ message: "Unauthorized user" });
+        if (!token) return res.status(401).json({ message: "Unauthorized" });
 
         // verify the token itself with the JWT_SECRET
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

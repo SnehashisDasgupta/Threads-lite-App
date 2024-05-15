@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import connectDB from './db/connectDB.js';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
+import postRoutes from './routes/postRoutes.js';
 
 dotenv.config();
 connectDB(); // MongoDB connection
@@ -19,6 +20,7 @@ app.use(cookieParser()); // To parse cookies attached to the client's request in
 
 // ROUTES
 app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
 
 
 app.listen(PORT, () => {
