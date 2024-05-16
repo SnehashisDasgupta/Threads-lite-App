@@ -1,6 +1,27 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 
+const getFeedPosts = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const following = user.following;
+
+        // get all the posts of the users whom currentUser follows
+        const feedPosts = await Post.find({ postedBy: {$in:following}}).sort({createdAt: -1});
+
+        res.status(200).json({ feedPosts });
+        
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log("Error in getFeedPosts: ", err.message);
+    }
+}
+
 const getPost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
@@ -131,4 +152,4 @@ const replyToPost = async (req, res) => {
     }
 }
 
-export { createPost, getPost, deletePost, likeUnlikePost, replyToPost };
+export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getFeedPosts };
