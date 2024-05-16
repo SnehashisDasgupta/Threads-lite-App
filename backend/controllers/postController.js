@@ -71,7 +71,7 @@ const deletePost = async (req, res) => {
 
 const likeUnlikePost = async (req, res) => {
     try {
-        const {id: postId} = req.params;
+        const postId = req.params.id;
         const userId = req.user._id;
 
         const post = await Post.findById(postId);
@@ -83,11 +83,13 @@ const likeUnlikePost = async (req, res) => {
         const userLikedPost = post.likes.includes(userId);
         if(userLikedPost){
             // Unlike post
+            // remove the userId from like array
             await Post.updateOne({ _id:postId }, {$pull: { likes: userId } });
             res.status(200).json({ message: "Post disliked successfully" });
 
         }else{
             // Like post
+            // add userId in the like array
             post.likes.push(userId);
             await post.save();
             res.status(200).json({ message: "Post liked successfully" });
@@ -99,4 +101,34 @@ const likeUnlikePost = async (req, res) => {
     }
 }
 
-export { createPost, getPost, deletePost, likeUnlikePost };
+const replyToPost = async (req, res) => {
+    try {
+        const {text} = req.body;
+        const postId = req.params.id;
+        const userId = req.user._id;
+        const userProfilePic = req.user.profilePic;
+        const username = req.user.username;
+
+        // if no text is given in comments then it will not work
+        if(!text) {
+            return res.json(400).json({ message: "Text field is required" });
+        }
+
+        const post = await Post.findById(postId);
+        if(!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const reply = { userId, text, userProfilePic, username };
+        post.replies.push(reply);
+        await post.save();
+
+        res.status(200).json({ message: "Reply added successfully", post });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log("Error in replyToPost: ", err.message);
+    }
+}
+
+export { createPost, getPost, deletePost, likeUnlikePost, replyToPost };
