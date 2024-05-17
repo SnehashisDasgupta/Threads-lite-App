@@ -1,7 +1,12 @@
 # FRONTEND
 npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion
 
+npm i @chakra-ui/icons
+
 npm i react-router-dom react-icons
+
+# Recoil is a state management library for React
+npm install recoil
 
 # BACKEND
 npm i express jsonwebtoken bcryptjs dotenv mongoose cookie-parser
