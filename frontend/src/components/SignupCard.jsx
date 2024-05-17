@@ -16,9 +16,20 @@ import {
   } from '@chakra-ui/react';
   import { useState } from 'react';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { useSetRecoilState } from 'recoil';
+import authScreenAtom from '../atoms/authAtom';
   
   export default function SignupCard() {
     const [showPassword, setShowPassword] = useState(false);
+    const setAuthScreen = useSetRecoilState(authScreenAtom);
+
+    const handleSignup = async () => {
+      try {
+        
+      } catch (error) {
+        console.log("Error in handleSignup: ", error);
+      }
+    }
   
     return (
       <Flex
@@ -77,13 +88,17 @@ import {
                   color={'white'}
                   _hover={{
                     bg: useColorModeValue("gray.600", "gray.700"),
-                  }}>
+                  }}
+                  onClick={handleSignup}
+                  >
                   Sign up
                 </Button>
               </Stack>
               <Stack pt={6}>
                 <Text align={'center'}>
-                  Already a user? <Link color={'blue.400'}>Login</Link>
+                  Already a user? <Link color={'blue.400'}
+                  onClick={() => setAuthScreen("login")}
+                  >Login</Link>
                 </Text>
               </Stack>
             </Stack>
