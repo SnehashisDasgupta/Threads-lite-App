@@ -13,13 +13,14 @@ import {
   Text,
   useColorModeValue,
   Link,
-  useToast,
 } from '@chakra-ui/react';
 
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../atoms/authAtom';
+import useShowToast from '../hooks/useShowToast';
+import userAtom from '../atoms/userAtom';
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,8 +32,9 @@ export default function SignupCard() {
     password: "",
   });
 
-  const toast = useToast();
-  
+  const showToast = useShowToast();
+  const setUser = useSetRecoilState(userAtom);
+
   const handleSignup = async () => {
     try {
       // inputs are in JSON format
@@ -47,20 +49,17 @@ export default function SignupCard() {
       const data = await res.json();
 
       if (data.error) {
-        toast({
-          title: "Error",
-          description: data.error,
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
+        // user-defined toast
+        showToast("Error", data.error, "error");
         return;
       }
 
       localStorage.setItem("user-threads", JSON.stringify(data));
+      // change state from null to data when signing in
+      setUser(data);
 
     } catch (error) {
-      console.log("Error in handleSignup: ", error);
+      showToast("Error", error, "error");
     }
   }
 
@@ -84,17 +83,17 @@ export default function SignupCard() {
               <Box>
                 <FormControl isRequired>
                   <FormLabel>First Name</FormLabel>
-                  <Input type="text" 
-                    onChange={(e) => setInputs({...inputs, name: e.target.value})}
-                    value= {inputs.name}
+                  <Input type="text"
+                    onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
+                    value={inputs.name}
                   />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl isRequired>
                   <FormLabel>Username</FormLabel>
-                  <Input type="text" 
-                    onChange={(e) => setInputs({...inputs, username: e.target.value})}
+                  <Input type="text"
+                    onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
                     value={inputs.username}
                   />
                 </FormControl>
@@ -103,15 +102,15 @@ export default function SignupCard() {
             <FormControl isRequired>
               <FormLabel>Email address</FormLabel>
               <Input type="email"
-                onChange={(e) => setInputs({...inputs, email: e.target.value})}
+                onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
                 value={inputs.email}
               />
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} 
-                  onChange={(e) => setInputs({...inputs, password: e.target.value})}
+                <Input type={showPassword ? 'text' : 'password'}
+                  onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
                   value={inputs.password}
                 />
                 <InputRightElement h={'full'}>

@@ -8,7 +8,7 @@ const useGetLoader = () => {
         // Hide the loader after 3 seconds
         const timer = setTimeout(() => {
           setLoader(false);
-        }, 1000);
+        }, 2000);
     
         // Clear the timer on component unmount or if content is loaded before 3 seconds
         return () => clearTimeout(timer);
