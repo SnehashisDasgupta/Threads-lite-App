@@ -52,6 +52,8 @@ const signupUser = async (req, res) => {
                 username: newUser.username,
                 email: newUser.email,
                 password: newUser.password,
+                bio: newUser.bio,
+                profilePic: newUser.profilePic,
             });
         } else {
             res.status(400).json({ error: "Invalid user data "}); 
@@ -79,6 +81,8 @@ const loginUser = async (req, res) => {
             name: user.name,
             email: user.email,
             username: user.username,
+            bio: user.bio,
+            profilePic: user.profilePic,
         });
         
     } catch (error) {

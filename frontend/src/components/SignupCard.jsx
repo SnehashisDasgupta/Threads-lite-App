@@ -45,9 +45,9 @@ export default function SignupCard() {
         },
         // convert inputs from JSON to string
         body: JSON.stringify(inputs),
-      })
-      const data = await res.json();
+      });
 
+      const data = await res.json();
       if (data.error) {
         // user-defined toast
         showToast("Error", data.error, "error");
