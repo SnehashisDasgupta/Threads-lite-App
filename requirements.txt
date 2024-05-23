@@ -12,3 +12,6 @@ npm install recoil
 npm i express jsonwebtoken bcryptjs dotenv mongoose cookie-parser
 
 npm i -D nodemon
+
+# store profilePic(s) in cloud by using cloudinary
+npm i cloudinary

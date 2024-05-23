@@ -1,36 +1,67 @@
+/* eslint-disable no-unused-vars */
 import {
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    Input,
-    Stack,
-    useColorModeValue,
-    Avatar,
-    Center,
-  } from '@chakra-ui/react';
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  useColorModeValue,
+  Avatar,
+  Center,
+} from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import usePreviewImg from '../hooks/usePreviewImg';
-  
-  export default function UpdateProfilePage() {
+import useShowToast from '../hooks/useShowToast';
 
-    const [user, setUser] = useRecoilState(userAtom);
-    const [inputs, setInputs] = useState({
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      bio: user.bio,
-      password: "",
-    });
+export default function UpdateProfilePage() {
 
-    const fileRef = useRef(null);
+  const [user, setUser] = useRecoilState(userAtom);
+  const [inputs, setInputs] = useState({
+    name: user.name,
+    username: user.username,
+    email: user.email,
+    bio: user.bio,
+    password: "",
+  });
 
-    const { handleImageChange, imgUrl } = usePreviewImg();
+  const fileRef = useRef(null);
+  const showToast = useShowToast();
 
-    return (
+  const { handleImageChange, imgUrl } = usePreviewImg();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/users/update/${user._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        //store object as string with inputs and profilePic as string
+        body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
+      });
+
+      const data = await res.json(); //updated user object
+      if(data.error){
+        showToast("Error", data.error, "error");
+        return;
+      }
+      
+      showToast("Success", "Profile updated successfully", "success");
+      setUser(data);
+      localStorage.setItem("user-threads", JSON.stringify(data));
+
+    } catch (error) {
+      showToast("Error", error, 'error');
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
       <Flex align={'center'} justify={'center'} my={6} >
         <Stack
           spacing={4}
@@ -44,67 +75,67 @@ import usePreviewImg from '../hooks/usePreviewImg';
             User Profile Edit
           </Heading>
           <FormControl>
-         
+
             <Stack direction={['column', 'row']} spacing={6}>
               <Center>
-                <Avatar size="xl" boxShadow={"md"} src={imgUrl || user.profilePic} />           
+                <Avatar size="xl" boxShadow={"md"} src={imgUrl || user.profilePic} />
               </Center>
               <Center w="half">
                 <Button w="full" onClick={() => fileRef.current.click()}
                 >Change Avatar
                 </Button>
-                <Input type='file' hidden ref={fileRef} onChange={handleImageChange}  />
+                <Input type='file' hidden ref={fileRef} onChange={handleImageChange} />
               </Center>
             </Stack>
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Full name</FormLabel>
             <Input
               placeholder="Snehashis Dasgupta"
               _placeholder={{ color: 'gray.500' }}
               type="text"
               value={inputs.name}
-              onChange={(e) => setInputs({...inputs, name: e.target.value})}
+              onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>User name</FormLabel>
             <Input
               placeholder="snehashisdasgupta"
               _placeholder={{ color: 'gray.500' }}
               type="text"
               value={inputs.username}
-              onChange={(e) => setInputs({...inputs, username: e.target.value})}
+              onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Email address</FormLabel>
             <Input
               placeholder="your-email@example.com"
               _placeholder={{ color: 'gray.500' }}
               type="email"
               value={inputs.email}
-              onChange={(e) => setInputs({...inputs, email: e.target.value})}
+              onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Bio</FormLabel>
             <Input
               placeholder="Description"
               _placeholder={{ color: 'gray.500' }}
               type="text"
               value={inputs.bio}
-              onChange={(e) => setInputs({...inputs, bio: e.target.value})}
+              onChange={(e) => setInputs({ ...inputs, bio: e.target.value })}
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Password</FormLabel>
             <Input
               placeholder="password"
               _placeholder={{ color: 'gray.500' }}
               type="password"
               value={inputs.password}
-              onChange={(e) => setInputs({...inputs, password: e.target.value})}
+              onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
             />
           </FormControl>
           <Stack spacing={6} direction={['column', 'row']}>
@@ -123,11 +154,14 @@ import usePreviewImg from '../hooks/usePreviewImg';
               w="full"
               _hover={{
                 bg: 'green.700',
-              }}>
+              }}
+              type='submit'
+            >
               Submit
             </Button>
           </Stack>
         </Stack>
       </Flex>
-    );
-  }
+    </form>
+  );
+}
