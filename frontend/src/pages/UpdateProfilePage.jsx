@@ -30,11 +30,14 @@ export default function UpdateProfilePage() {
 
   const fileRef = useRef(null);
   const showToast = useShowToast();
+  const [updating, setUpdating] = useState(false);
 
   const { handleImageChange, imgUrl } = usePreviewImg();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (updating) return;
+    setUpdating(true);
     try {
       const res = await fetch(`/api/users/update/${user._id}`, {
         method: "PUT",
@@ -57,6 +60,8 @@ export default function UpdateProfilePage() {
 
     } catch (error) {
       showToast("Error", error, 'error');
+    } finally {
+      setUpdating(false);
     }
   }
 
@@ -91,7 +96,7 @@ export default function UpdateProfilePage() {
           <FormControl>
             <FormLabel>Full name</FormLabel>
             <Input
-              placeholder="Snehashis Dasgupta"
+              placeholder="Full name"
               _placeholder={{ color: 'gray.500' }}
               type="text"
               value={inputs.name}
@@ -101,7 +106,7 @@ export default function UpdateProfilePage() {
           <FormControl>
             <FormLabel>User name</FormLabel>
             <Input
-              placeholder="snehashisdasgupta"
+              placeholder="User name"
               _placeholder={{ color: 'gray.500' }}
               type="text"
               value={inputs.username}
@@ -156,6 +161,7 @@ export default function UpdateProfilePage() {
                 bg: 'green.700',
               }}
               type='submit'
+              isLoading={updating}
             >
               Submit
             </Button>

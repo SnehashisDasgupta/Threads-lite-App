@@ -1,16 +1,44 @@
+import { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader"
 import UserPost from "../components/UserPost"
 import Loader from "../components/loader/Loader";
 import useGetLoader from "../hooks/useGetLoader";
+import { useParams } from "react-router-dom";
+import useShowToast from "../hooks/useShowToast";
 
 const UserPage = () => {
   const { loader } = useGetLoader();
+  const showToast = useShowToast();
+  const [user, setUser] = useState(null);
+  const { username } = useParams();
+
+  // useEffect triggers when username changes
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await fetch(`/api/users/profile/${username}`);
+        const data = await res.json();
+        if(data.error){
+          showToast("Error", data.error, "error");
+          return;
+        }
+        setUser(data);
+        
+      } catch (error) {
+        showToast("Error", error, "error");
+      }
+    };
+
+    getUser();
+  }, [username, showToast]);
+
+  if(!user) return null;
+
   return (
     <>
-      <UserHeader />
+      <UserHeader user={user} />
 
       {loader && [...Array(2)].map((_, idx) => <Loader key={idx} />)}
-
       {!loader && (
         <>
           <UserPost likes={23} replies={4} postImg="/post0.jpg" postTitle="Cycling is my passion🚴‍♀️🚴‍♂️🚴‍♀️" />
