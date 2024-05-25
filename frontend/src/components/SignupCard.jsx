@@ -34,8 +34,10 @@ export default function SignupCard() {
 
   const showToast = useShowToast();
   const setUser = useSetRecoilState(userAtom);
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
+    setLoading(true);
     try {
       // inputs are in JSON format
       const res = await fetch("/api/users/signup", {
@@ -60,6 +62,8 @@ export default function SignupCard() {
 
     } catch (error) {
       showToast("Error", error, "error");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -134,6 +138,7 @@ export default function SignupCard() {
                   bg: useColorModeValue("gray.600", "gray.700"),
                 }}
                 onClick={handleSignup}
+                isLoading={loading}
               >
                 Sign up
               </Button>
