@@ -22,8 +22,7 @@ cloudinary.config({
 
 // MIDDLEWARE
 // " limit: '50mb' " is added to solve 'PayloadTooLargeError: request entity too large' error
-app.use(express.json({limit: '50mb'}))
-app.use(express.json()); // To parse JSON data in the req.body
+app.use(express.json({limit: '50mb'})); // To parse JSON data in the req.body
 app.use(express.urlencoded({ extended: true })); // To parse form data in the req.body
 app.use(cookieParser()); // To parse cookies attached to the client's request in the 'req.cookies' object in your route handlers.
 

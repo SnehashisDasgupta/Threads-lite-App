@@ -1,9 +1,13 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 const HomePage = () => {
+  const currentUser = useRecoilValue(userAtom); // logged in user
+
   return (
-    <Link to={"/snehashisdasgupta"}>
+    <Link to={currentUser.username}>
         <Flex w={"full"} justifyContent={"center"}>
             <Button mx={"auto"}>Visit Profile Page</Button>
         </Flex>

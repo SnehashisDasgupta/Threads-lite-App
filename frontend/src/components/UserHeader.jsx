@@ -10,10 +10,10 @@ import useShowToast from "../hooks/useShowToast";
 // { user } -> user's profile
 const UserHeader = ({ user }) => {
     const toast = useToast();
+    const showToast = useShowToast();
     const currentUser = useRecoilValue(userAtom); // logged in user
     const [following, setFollowing] = useState(user.followers.includes(currentUser._id));
     const [updating, setUpdating] = useState(false);
-    const showToast = useShowToast();
 
     //Profile URL copied in the clipboard
     const copyURL = () => {
@@ -31,6 +31,7 @@ const UserHeader = ({ user }) => {
     };
 
     const handleFollowUnfollow = async () => {
+        //if not logged in
         if(!currentUser){
             showToast("Error", "Please login to follow", "error");
             return;
