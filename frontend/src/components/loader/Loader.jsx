@@ -21,10 +21,10 @@ const ThreadSkeleton = () => {
         {/* Post Image Skeleton */}
         <Skeleton mb="2" h="300px" w={"full"} borderRadius={6} />
 
-        {/* Action icons skeletons */}
+        {/* Action icons skeletons
         <Flex justifyContent="space-between" alignItems="center" mb="2">
           <Skeleton h="6" w="30%" />
-        </Flex>
+        </Flex> */}
 
         {/* Comment section Skeleton */}
         <Skeleton h="12" mb="2" borderRadius={6} />

@@ -1,18 +1,48 @@
-import { Button, Flex } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import userAtom from "../atoms/userAtom";
+import useShowToast from "../hooks/useShowToast";
+import { useEffect, useState } from "react";
+import useGetLoader from "../hooks/useGetLoader";
+import Loader from "../components/loader/Loader";
+import Post from "../components/Post";
 
 const HomePage = () => {
-  const currentUser = useRecoilValue(userAtom); // logged in user
+  const { loader } = useGetLoader();
+  const showToast = useShowToast();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const getFeedPost = async () => {
+      try {
+        const res = await fetch("/api/posts/feed");
+        const data = await res.json();
+        if(data.error){
+          showToast("Error", data.error, "error");
+          return;
+        }
+        setPosts(data);
+        
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }
+    }
+
+    getFeedPost();
+  }, [showToast]);
 
   return (
-    <Link to={currentUser.username}>
-        <Flex w={"full"} justifyContent={"center"}>
-            <Button mx={"auto"}>Visit Profile Page</Button>
-        </Flex>
-    </Link>
-  )
+    <>
+      {/* If user doesn't follow anyone */}
+      {!loader && posts.length === 0 && 
+        <h1>Follow someone to see the feed</h1>
+      }
+
+      {loader && [...Array(posts.length)].map((_, idx) => <Loader key={idx} />)}
+
+      {posts.map((post) => (
+        <Post key={post._id} post={post} postedBy={post.postedBy} />
+      ) )}
+
+    </>
+  );
 }
 
 export default HomePage;
