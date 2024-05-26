@@ -1,15 +1,17 @@
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
 import { FaRegBookmark } from "react-icons/fa";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Actions from "./Actions";
 import { useEffect, useState } from "react";
 import useShowToast from '../hooks/useShowToast';
+
+import { formatDistanceToNow } from "date-fns";
 
 const Post = ({ post, postedBy }) => {
     const [liked, setLiked] = useState(false);
     const [user, setUser] = useState(null);
     const showToast = useShowToast();
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getUser = async () => {
@@ -33,12 +35,18 @@ const Post = ({ post, postedBy }) => {
     }, [postedBy, showToast]);
 
     return (
-        <Link to={"/dasguptasnehashis/post/001"}>
+        <Link to={`/${user?.username}/post/${post?._id}`}>
             <Flex gap={3} mb={4} py={5}>
                 <Flex flexDirection={"column"} alignItems={"center"}>
                     
                     {/* admin user profilePic */}
-                    <Avatar size={"md"} name={user?.name} src={user?.profilePic} />
+                    <Avatar size={"md"} name={user?.name} src={user?.profilePic} 
+                        // when click 'Avatar' it will navigate to the profilePage
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/${user.username}`)
+                        }}
+                    />
 
                     {/* line on the left side of every post */}
                     {/* ------------------------------------------------------ */}
@@ -46,33 +54,45 @@ const Post = ({ post, postedBy }) => {
 
                     {/* avatars of users who commented */}
                     <Box position={"relative"} w={"full"}>
-                        <Avatar 
-                            size={"xs"} 
-                            name="Kent Clark" 
-                            src="https://bit.ly/kent-c-dodds" 
-                            position={"absolute"} 
-                            top={"0px"} 
-                            left={"15px"} 
-                            padding={"2px"} 
-                        />
-                        <Avatar 
-                            size={"xs"} 
-                            name="Dan Abrahmov" 
-                            src="https://bit.ly/dan-abramov" 
-                            position={"absolute"} 
-                            bottom={"0px"} 
-                            right={"-5px"} 
-                            padding={"2px"} 
-                        />
-                        <Avatar 
-                            size={"xs"} 
-                            name="Qurto Medwa" 
-                            src="https://bit.ly/code-beast" 
-                            position={"absolute"} 
-                            bottom={"0px"} 
-                            left={"4px"} 
-                            padding={"2px"} 
-                        />
+                        {/* if there is no replies then show '✒' */}
+                        {post.replies.length===0 && 
+                            <Text textAlign={"center"}>✒</Text>
+                        }
+
+                        {/* shows profilePic of top 3 users who replied in the post */}
+                        {post.replies[0] && (
+                            <Avatar 
+                                size={"xs"} 
+                                name={post.replies[0].name} 
+                                src={post.replies[0].profilePic}
+                                position={"absolute"} 
+                                top={"0px"} 
+                                left={"15px"} 
+                                padding={"2px"} 
+                            />   
+                        )}
+                        {post.replies[1] && (
+                            <Avatar 
+                                size={"xs"} 
+                                name={post.replies[1].name}
+                                src={post.replies[1].profilePic} 
+                                position={"absolute"} 
+                                bottom={"0px"} 
+                                right={"-5px"} 
+                                padding={"2px"} 
+                            />
+                        )}
+                        {post.replies[2] && (
+                            <Avatar 
+                                size={"xs"} 
+                                name={post.replies[2].name}
+                                src={post.replies[2].profilePic} 
+                                position={"absolute"} 
+                                bottom={"0px"} 
+                                left={"4px"} 
+                                padding={"2px"} 
+                            />
+                        )}
                     </Box>
                 </Flex>
 
@@ -81,7 +101,13 @@ const Post = ({ post, postedBy }) => {
                     <Flex justifyContent={"space-between"} w={"full"}>
                         {/* admin username and blue_tick[verified] */}
                         <Flex w={"full"} alignItems={"center"}>
-                            <Text fontSize={"sm"} fontWeight={"bold"}>
+                            <Text fontSize={"sm"} fontWeight={"bold"}
+                                // when click 'username' it will navigate to the profilePage
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate(`/${user.username}`)
+                                }}
+                            >
                                 {user?.username}
                             </Text>
                             <Image src="/verified.png" w={4} h={4} ml={1} />
@@ -89,8 +115,8 @@ const Post = ({ post, postedBy }) => {
 
                         {/* time[when the post is uploaded] and threeDots */}
                         <Flex gap={4} alignItems={"center"}>
-                            <Text fontSize={"sm"} color={"gray.light"}>
-                                1d
+                            <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
+                                {formatDistanceToNow(new Date(post.createdAt))} ago
                             </Text>
 
                             <FaRegBookmark

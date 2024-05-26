@@ -8,6 +8,9 @@ npm i react-router-dom react-icons
 # Recoil is a state management library for React
 npm install recoil
 
+# date of post
+npm i date-fns
+
 # BACKEND
 npm i express jsonwebtoken bcryptjs dotenv mongoose cookie-parser
 
