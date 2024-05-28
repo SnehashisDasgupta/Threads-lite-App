@@ -37,11 +37,8 @@ const Post = ({ post, postedBy }) => {
         getUser();
     }, [postedBy, showToast]);
 
-    const handleDeletePost = async (e) => {
+    const handleDeletePost = async () => {
         try {
-            // the whole POST is a link so, when deletePost clicked, it doesn't reloads the page
-            e.preventDefault();
-
             if (!window.confirm("Are you sure you want to delete the post?")) return;
             
             const res = await fetch(`/api/posts/${post._id}`, {
@@ -152,7 +149,10 @@ const Post = ({ post, postedBy }) => {
                             />
 
                             {currentUser?._id === user?._id && 
-                                <DeleteIcon onClick={handleDeletePost} />
+                                <DeleteIcon 
+                                    cursor={"pointer"}
+                                    onClick={handleDeletePost} 
+                                />
                             }
 
                         </Flex>
