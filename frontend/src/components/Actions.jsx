@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
 
-const Actions = ({ post:post_  }) => {
+const Actions = ({ post: post_ }) => {
     const user = useRecoilValue(userAtom);
     const [liked, setLiked] = useState(post_?.likes.includes(user?._id));
     const [post, setPost] = useState(post_);
@@ -58,7 +58,7 @@ const Actions = ({ post:post_  }) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ text:reply }),
+                body: JSON.stringify({ text: reply }),
             });
 
             const data = await res.json();
@@ -134,13 +134,13 @@ const Actions = ({ post:post_  }) => {
             {/* replies and likes */}
             <Flex gap={2} alignItems={"center"}>
                 <Text color={"gray.light"} fontSize={"sm"}>
-                    {post?.replies.length} replies
+                    {post?.likes.length} likes
                 </Text>
 
                 <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
 
                 <Text color={"gray.light"} fontSize={"sm"}>
-                    {post?.likes.length} likes
+                    {post?.replies.length} replies
                 </Text>
             </Flex>
 
