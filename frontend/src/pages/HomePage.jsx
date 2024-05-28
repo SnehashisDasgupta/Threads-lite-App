@@ -14,12 +14,12 @@ const HomePage = () => {
       try {
         const res = await fetch("/api/posts/feed");
         const data = await res.json();
-        if(data.error){
+        if (data.error) {
           showToast("Error", data.error, "error");
           return;
         }
         setPosts(data);
-        
+
       } catch (error) {
         showToast("Error", error.message, "error");
       }
@@ -30,17 +30,21 @@ const HomePage = () => {
 
   return (
     <>
+      {/* If loader is true, show the loader */}
+      {loader && [...Array(posts.length)].map((_, idx) => <Loader key={idx} />)}
+
       {/* If user doesn't follow anyone */}
-      {!loader && posts.length === 0 && 
+      {!loader && posts.length === 0 &&
         <h1>Follow someone to see the feed</h1>
       }
 
-      {loader && [...Array(posts.length)].map((_, idx) => <Loader key={idx} />)}
-
-      {posts.map((post) => (
-        <Post key={post._id} post={post} postedBy={post.postedBy} />
-      ) )}
-
+      {/* If loader is false and there are posts, show the posts */}
+      {!loader && posts.length > 0 && (
+        posts.map((post) => (
+          <Post key={post._id} post={post} postedBy={post.postedBy} />
+        )
+        )
+      )}
     </>
   );
 }
