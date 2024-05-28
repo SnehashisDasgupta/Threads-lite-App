@@ -12,7 +12,7 @@ const UserHeader = ({ user }) => {
     const toast = useToast();
     const showToast = useShowToast();
     const currentUser = useRecoilValue(userAtom); // logged in user
-    const [following, setFollowing] = useState(user.followers.includes(currentUser._id));
+    const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
     const [updating, setUpdating] = useState(false);
 
     //Profile URL copied in the clipboard
@@ -60,7 +60,7 @@ const UserHeader = ({ user }) => {
                 user.followers.pop(); // remove user._id from followers_array of the user and decrement followers count
             } else {
                 showToast("Success", `Followed ${user.username}`, "success");
-                user.followers.push(currentUser._id); //push user.id of currentUser._id in followers_array and increment followers count
+                user.followers.push(currentUser?._id); //push user.id of currentUser._id in followers_array and increment followers count
             }
             setFollowing(!following);
             
@@ -125,7 +125,7 @@ const UserHeader = ({ user }) => {
         <Text>{ user.bio }</Text>
 
         {/* if current user is watching his own profile when update_profile button will show */}
-        {currentUser._id === user._id && (
+        {currentUser?._id === user._id && (
             //as={RouterLink} to="/update" :The page will not get refresh when the updatePage will shown
             <Link as={RouterLink} to="/update">
                 <Button size={"sm"}>Update Profile</Button>
@@ -133,7 +133,7 @@ const UserHeader = ({ user }) => {
         )}
 
         {/* if currentUser is watching other user's profile then follow button will show */}
-        {currentUser._id !== user._id && (
+        {currentUser?._id !== user._id && (
             <Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
                 { following ? "Unfollow" : "Follow" }
             </Button>
@@ -179,4 +179,4 @@ const UserHeader = ({ user }) => {
   )
 }
 
-export default UserHeader
+export default UserHeader;

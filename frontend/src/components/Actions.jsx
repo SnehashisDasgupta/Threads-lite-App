@@ -154,7 +154,7 @@ const Actions = ({ post:post_  }) => {
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
-                            <Input placeholder={`Give a comment ${user.username}...`}
+                            <Input placeholder={`Give a comment ${user?.username}...`}
                                 value={reply}
                                 onChange={(e) => setReply(e.target.value)}
                             />
