@@ -37,8 +37,10 @@ const Post = ({ post, postedBy }) => {
         getUser();
     }, [postedBy, showToast]);
 
-    const handleDeletePost = async () => {
+    const handleDeletePost = async (e) => {
         try {
+            // the whole POST is a link so, when deletePost clicked, it doesn't reloads the page
+            e.preventDefault();
             if (!window.confirm("Are you sure you want to delete the post?")) return;
             
             const res = await fetch(`/api/posts/${post._id}`, {
@@ -86,7 +88,7 @@ const Post = ({ post, postedBy }) => {
                                 name={post.replies[0].username}
                                 src={post.replies[0].userProfilePic}
                                 position={"absolute"} 
-                                top={"0px"} 
+                                top={"-12px"} 
                                 left={"15px"} 
                                 padding={"2px"} 
                             />   
@@ -97,8 +99,8 @@ const Post = ({ post, postedBy }) => {
                                 name={post.replies[1].username}
                                 src={post.replies[1].userProfilePic} 
                                 position={"absolute"} 
-                                bottom={"0px"} 
-                                right={"-5px"} 
+                                top={"-12px"} 
+                                left={"7px"} 
                                 padding={"2px"} 
                             />
                         )}
@@ -108,8 +110,8 @@ const Post = ({ post, postedBy }) => {
                                 name={post.replies[2].username}
                                 src={post.replies[2].userProfilePic} 
                                 position={"absolute"} 
-                                bottom={"0px"} 
-                                left={"4px"} 
+                                top={"-12px"} 
+                                left={"-1px"} 
                                 padding={"2px"} 
                             />
                         )}

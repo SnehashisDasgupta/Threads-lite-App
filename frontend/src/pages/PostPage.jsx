@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, Divider, Flex, Image, Text } from "@chakra-ui/react"
 import { FaRegBookmark } from "react-icons/fa";
 import Actions from "../components/Actions";
+import Comment from "../components/Comment";
 import Loader from "../components/loader/Loader";
 import useGetLoader from "../hooks/useGetLoader";
 import useGetUserProfile from "../hooks/useGetUserProfile";
@@ -41,11 +42,8 @@ const PostPage = () => {
     getPost();
   }, [showToast, pid])
 
-  const handleDeletePost = async (e) => {
+  const handleDeletePost = async () => {
     try {
-        // the whole POST is a link so, when deletePost clicked, it doesn't reloads the page
-        e.preventDefault();
-
         if (!window.confirm("Are you sure you want to delete the post?")) return;
         
         const res = await fetch(`/api/posts/${post._id}`, {
@@ -55,6 +53,7 @@ const PostPage = () => {
         if (data.error) return showToast("Error", data.error, "error");
 
         showToast("Success", "Post deleted", "success");
+        navigate(`${user.username}`);
 
     } catch (error) {
         showToast("Error", error.message, "error");
@@ -150,13 +149,14 @@ const PostPage = () => {
           {/* A thin line to divide the post from comment section */}
           <Divider my={4} />
 
-          {/* <Comment
-            userAvatar="https://bit.ly/dan-abramov"
-            username="choudhurysayan"
-            comment="Looks really good..."
-            createdAt="1d"
-            likes={22}
-          /> */}
+          {post.replies.map((reply) => (
+             <Comment
+              key = {reply.id}
+              reply = {reply}
+              // if it is last reply then don't show 'divider line'
+              lastReply = {reply._id === post.replies[post.replies.length-1]._id}
+             />
+          ))}
         </>
       )}
 
