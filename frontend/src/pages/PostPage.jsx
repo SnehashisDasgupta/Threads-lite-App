@@ -5,13 +5,14 @@ import Comment from "../components/Comment";
 import Loader from "../components/loader/Loader";
 import useGetLoader from "../hooks/useGetLoader";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
+import postAtom from "../atoms/postAtom";
 
 const PostPage = () => {
   const { loader } = useGetLoader();
@@ -20,7 +21,7 @@ const PostPage = () => {
   const { pid } = useParams();
   const currentUser = useRecoilValue(userAtom);
 
-  const [post, setPost] = useState(null);
+  const [posts, setPosts] = useRecoilState(postAtom);
   const { user } = useGetUserProfile();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const PostPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        setPost(data);
+        setPosts([data]);
 
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -40,13 +41,16 @@ const PostPage = () => {
     }
 
     getPost();
-  }, [showToast, pid])
+  }, [showToast, pid, setPosts])
+
+  
+  const currentPost = posts[0];
 
   const handleDeletePost = async () => {
     try {
         if (!window.confirm("Are you sure you want to delete the post?")) return;
         
-        const res = await fetch(`/api/posts/${post._id}`, {
+        const res = await fetch(`/api/posts/${currentPost._id}`, {
             method: "DELETE",
         });
         const data = await res.json();
@@ -60,7 +64,7 @@ const PostPage = () => {
     }
 };
 
-  if (!post) return null;
+  if (!currentPost) return null;
 
   return (
     <>
@@ -98,7 +102,7 @@ const PostPage = () => {
             {/* time[when the post is uploaded] and threeDots */}
             <Flex gap={4} alignItems={"center"}>
               <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
-                {formatDistanceToNow(new Date(post.createdAt))} ago
+                {formatDistanceToNow(new Date(currentPost.createdAt))} ago
               </Text>
 
               <FaRegBookmark
@@ -121,18 +125,18 @@ const PostPage = () => {
           </Flex>
 
 
-          <Text py={1} my={2} fontSize={"sm"}>{post.text}</Text>
+          <Text py={1} my={2} fontSize={"sm"}>{currentPost.text}</Text>
 
-          {post.img && (
+          {currentPost.img && (
 
             <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>
-              <Image src={post.img} w={"full"} />
+              <Image src={currentPost.img} w={"full"} />
             </Box>
           )}
 
           {/* Action icons */}
           <Flex gap={3} my={3}>
-            <Actions post={post} />
+            <Actions post={currentPost} />
           </Flex>
 
           {/* A thin line to divide the post from comment section */}
@@ -149,12 +153,12 @@ const PostPage = () => {
           {/* A thin line to divide the post from comment section */}
           <Divider my={4} />
 
-          {post.replies.map((reply) => (
+          {currentPost.replies.map((reply) => (
              <Comment
               key = {reply.id}
               reply = {reply}
               // if it is last reply then don't show 'divider line'
-              lastReply = {reply._id === post.replies[post.replies.length-1]._id}
+              lastReply = {reply._id === currentPost.replies[currentPost.replies.length-1]._id}
              />
           ))}
         </>

@@ -1,13 +1,15 @@
 import useShowToast from "../hooks/useShowToast";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useGetLoader from "../hooks/useGetLoader";
 import Loader from "../components/loader/Loader";
 import Post from "../components/Post";
+import { useRecoilState } from "recoil";
+import postAtom from "../atoms/postAtom";
 
 const HomePage = () => {
   const { loader } = useGetLoader();
   const showToast = useShowToast();
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useRecoilState(postAtom);
 
   useEffect(() => {
     const getFeedPost = async () => {
@@ -26,7 +28,7 @@ const HomePage = () => {
     }
 
     getFeedPost();
-  }, [showToast]);
+  }, [showToast, setPosts]);
 
   return (
     <>

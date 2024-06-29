@@ -3,9 +3,10 @@ import { Button, CloseButton, Flex, FormControl, Image, Input, Modal, ModalBody,
 import { useRef, useState } from "react";
 import usePreviewImg from "../hooks/usePreviewImg";
 import { BsFillImageFill } from "react-icons/bs";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from '../atoms/userAtom';
 import useShowToast from "../hooks/useShowToast";
+import postAtom from "../atoms/postAtom";
 
 const MAX_CHAR = 500;
 
@@ -18,6 +19,7 @@ const CreatePost = () => {
     const [loading, setLoading] = useState(false);
     const user = useRecoilValue(userAtom);
     const showToast = useShowToast();
+    const [posts, setPosts] = useRecoilState(postAtom);
 
 
     const handleTextChange = (e) => {
@@ -53,6 +55,8 @@ const CreatePost = () => {
             }
     
             showToast("Success", "Post created successfully", "success");
+            // if post is created, no need to refresh to see the new post, it will automatically show
+            setPosts([data, ...posts]);
             onClose();
             setPostText("");
             setImgUrl("");
@@ -69,12 +73,12 @@ const CreatePost = () => {
             <Button
                 position={"fixed"}
                 bottom={10}
-                right={10}
-                leftIcon={<AddIcon />}
+                right={5}
                 bg={useColorModeValue("grey.300", "gray.dark")}
                 onClick={onOpen}
+                size={{ base: "sm", sm: "md" }}
             >
-                Post
+                <AddIcon />
             </Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>

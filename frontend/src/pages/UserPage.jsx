@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import UserHeader from "../components/UserHeader"
 import Loader from "../components/loader/Loader";
 import useGetLoader from "../hooks/useGetLoader";
@@ -7,13 +7,15 @@ import useShowToast from "../hooks/useShowToast";
 import { Flex, Spinner } from "@chakra-ui/react";
 import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
+import { useRecoilState } from "recoil";
+import postAtom from "../atoms/postAtom";
 
 const UserPage = () => {
   const {loading, user} = useGetUserProfile();
   const { username } = useParams();
   const { loader } = useGetLoader();
   const showToast = useShowToast();
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useRecoilState(postAtom);
 
   // useEffect triggers when username changes
   useEffect(() => {
@@ -35,7 +37,9 @@ const UserPage = () => {
     }
 
     getPosts();
-  }, [username, showToast]);
+  }, [username, showToast, setPosts]);
+
+  console.log(posts)
 
   if (!user && loader) {
     return (
