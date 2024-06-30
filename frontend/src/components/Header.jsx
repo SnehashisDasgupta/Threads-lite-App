@@ -17,14 +17,26 @@ const Header = () => {
         </Link>
       )}
 
-      <Image
-        cursor={"pointer"}
-        alt="logo"
-        w={6}
-        // if mode is dark, logo will be light_mode and vice-versa
-        src={colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
-        onClick={toggleColorMode}
-      />
+      {user ? (
+        <Image
+          cursor={"pointer"}
+          alt="logo"
+          w={6}
+          // if mode is dark, logo will be light_mode and vice-versa
+          src={colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
+          onClick={toggleColorMode}
+        />
+      ) : (
+        <Image
+          cursor={"pointer"}
+          alt="logo"
+          mx={"auto"}
+          w={10}
+          // if mode is dark, logo will be light_mode and vice-versa
+          src={colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
+          onClick={toggleColorMode}
+        />
+      )}
 
       {user && (
         <Link as={RouterLink} to={`/${user.username}`}>
