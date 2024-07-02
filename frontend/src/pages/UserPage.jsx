@@ -39,8 +39,6 @@ const UserPage = () => {
     getPosts();
   }, [username, showToast, setPosts]);
 
-  console.log(posts)
-
   if (!user && loader) {
     return (
       <Flex justifyContent={"center"}>

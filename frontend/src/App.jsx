@@ -1,4 +1,4 @@
-import { Button, Container } from "@chakra-ui/react"
+import { Box, Container } from "@chakra-ui/react"
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import UserPage from "./pages/UserPage";
@@ -10,40 +10,44 @@ import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import CreatePost from "./components/CreatePost";
-import { FiLogOut } from "react-icons/fi";
-import useLogout from "./hooks/useLogout";
+import ChatPage from "./pages/ChatPage";
+import BookmarkPage from "./pages/BookmarkPage";
 
 function App() {
   const user = useRecoilValue(userAtom);
-  const logout = useLogout();
 
   return (
-    <Container maxW='620px'>
-      <Header />
-      <Routes>
-        <Route path="/" element={user ? <HomePage /> : <Navigate to="/auth" />} />
-        <Route path="/auth" element={!user ? <AuthPage /> : <Navigate to="/" />} />
+    <Box position={"relative"} w={"full"}>
+      <Container maxW='620px'>
+        <Header />
+        <Routes>
+          <Route path="/" element={user ? <HomePage /> : <Navigate to="/auth" />} />
+          <Route path="/auth" element={!user ? <AuthPage /> : <Navigate to="/" />} />
 
-        <Route path="/update" element={user ? <UpdateProfilePage /> : <Navigate to="/auth" />} />
+          <Route path="/update" element={user ? <UpdateProfilePage /> : <Navigate to="/auth" />} />
 
-        {/* Only show on ProfilePage and not on HomePage */}
-        <Route path="/:username" element={user ? (
-          <>
-            <UserPage />
-            <CreatePost />
-            {/* Logout button */}
-            <Button position={"fixed"} bottom={8} right={5} size={{ base: "xs", sm: "sm" }} bg={"grey.300"}
-              onClick={logout}
-            >
-              <FiLogOut size={20} />
-            </Button>
-          </>
-        ) : (
-          <UserPage />
-        )} />
-        <Route path="/:username/post/:pid" element={<PostPage />} />
-      </Routes>
-    </Container>
+          {/* Only show on ProfilePage and not on HomePage */}
+          <Route
+            path="/:username"
+            element={user ? (
+              <>
+                <UserPage />
+
+                <CreatePost />
+              </>
+            ) : (
+              <UserPage />
+            )} />
+
+          <Route path="/:username/post/:pid" element={<PostPage />} />
+
+          <Route path="/chat" element={user ? <ChatPage /> : <Navigate to={"/auth"} />} />
+
+          <Route path="/bookmarks" element={user ? <BookmarkPage /> : <Navigate to={"/auth"} />} />
+
+        </Routes>
+      </Container>
+    </Box>
   )
 }
 
