@@ -1,9 +1,10 @@
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
-import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom"
 import Actions from "./Actions";
 import { useEffect, useState } from "react";
 import useShowToast from '../hooks/useShowToast';
+import useBookmark from '../hooks/useBookmark';
 
 import { formatDistanceToNow } from "date-fns";
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -17,13 +18,14 @@ const Post = ({ post, postedBy }) => {
     const navigate = useNavigate();
     const currentUser = useRecoilValue(userAtom);
     const [posts, setPosts] = useRecoilState(postAtom);
+    const [isBookmarked, toogleBookmark] = useBookmark(post._id);
 
     useEffect(() => {
         const getUser = async () => {
             try {
                 const res = await fetch(`/api/users/profile/${postedBy}`);
                 const data = await res.json();
-    
+
                 if (data.error) {
                     showToast("Error", data.error, "error");
                     return;
@@ -44,7 +46,7 @@ const Post = ({ post, postedBy }) => {
             // the whole POST is a link so, when deletePost clicked, it doesn't reloads the page
             e.preventDefault();
             if (!window.confirm("Are you sure you want to delete the post?")) return;
-            
+
             const res = await fetch(`/api/posts/${post._id}`, {
                 method: "DELETE",
             });
@@ -60,13 +62,15 @@ const Post = ({ post, postedBy }) => {
         }
     };
 
+
+
     return (
         <Link to={`/${user?.username}/post/${post?._id}`}>
             <Flex gap={3} mb={4} py={5}>
                 <Flex flexDirection={"column"} alignItems={"center"}>
-                    
+
                     {/* admin user profilePic */}
-                    <Avatar size={"md"} name={user?.name} src={user?.profilePic} 
+                    <Avatar size={"md"} name={user?.name} src={user?.profilePic}
                         // when click 'Avatar' it will navigate to the profilePage
                         onClick={(e) => {
                             e.preventDefault();
@@ -81,42 +85,42 @@ const Post = ({ post, postedBy }) => {
                     {/* avatars of users who commented */}
                     <Box position={"relative"} w={"full"}>
                         {/* if there is no replies then show '✒' */}
-                        {post.replies.length===0 && 
+                        {post.replies.length === 0 &&
                             <Text textAlign={"center"}>✒</Text>
                         }
 
                         {/* shows profilePic of top 3 users who replied in the post */}
                         {post.replies[0] && (
-                            <Avatar 
-                                size={"xs"} 
+                            <Avatar
+                                size={"xs"}
                                 name={post.replies[0].username}
                                 src={post.replies[0].userProfilePic}
-                                position={"absolute"} 
-                                top={"-12px"} 
-                                left={"15px"} 
-                                padding={"2px"} 
-                            />   
+                                position={"absolute"}
+                                top={"-12px"}
+                                left={"15px"}
+                                padding={"2px"}
+                            />
                         )}
                         {post.replies[1] && (
-                            <Avatar 
-                                size={"xs"} 
+                            <Avatar
+                                size={"xs"}
                                 name={post.replies[1].username}
-                                src={post.replies[1].userProfilePic} 
-                                position={"absolute"} 
-                                top={"-12px"} 
-                                left={"7px"} 
-                                padding={"2px"} 
+                                src={post.replies[1].userProfilePic}
+                                position={"absolute"}
+                                top={"-12px"}
+                                left={"7px"}
+                                padding={"2px"}
                             />
                         )}
                         {post.replies[2] && (
-                            <Avatar 
-                                size={"xs"} 
+                            <Avatar
+                                size={"xs"}
                                 name={post.replies[2].username}
-                                src={post.replies[2].userProfilePic} 
-                                position={"absolute"} 
-                                top={"-12px"} 
-                                left={"-1px"} 
-                                padding={"2px"} 
+                                src={post.replies[2].userProfilePic}
+                                position={"absolute"}
+                                top={"-12px"}
+                                left={"-1px"}
+                                padding={"2px"}
                             />
                         )}
                     </Box>
@@ -139,27 +143,41 @@ const Post = ({ post, postedBy }) => {
                             <Image src="/verified.png" w={4} h={4} ml={1} />
                         </Flex>
 
-                        {/* time[when the post is uploaded] and threeDots */}
+                        {/* time[when the post is uploaded] */}
                         <Flex gap={4} alignItems={"center"}>
                             <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
                                 {formatDistanceToNow(new Date(post.createdAt))} ago
                             </Text>
 
-                            <FaRegBookmark
-                                title="Bookmark"
-                                onClick={(e) => {
-                                    // it will not trigger the parent 'Link' tag , and will only trigger 'postSave()' function
-                                    e.preventDefault();
-                                    showToast("Post Saved", "", "success");
-                                }}
-                            />
 
-                            {currentUser?._id === user?._id && 
-                                <DeleteIcon 
+                            {/* current user cannot save his own post and cannot delete other's post */}
+                            {currentUser?._id !== user?._id ? (
+                                // BOOKMARK 
+                                isBookmarked ? (
+                                    <FaBookmark
+                                        title="Unmark"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            toogleBookmark();
+                                        }}
+                                    />
+                                ) : (
+                                    <FaRegBookmark
+                                        title="Mark"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            toogleBookmark();
+                                        }}
+                                    />
+                                )
+                            ) : (
+                                currentUser?._id === user?._id &&
+                                <DeleteIcon
                                     cursor={"pointer"}
-                                    onClick={handleDeletePost} 
+                                    onClick={handleDeletePost}
                                 />
-                            }
+                            )}
+
 
                         </Flex>
                     </Flex>
@@ -178,7 +196,7 @@ const Post = ({ post, postedBy }) => {
                     <Flex gap={3} my={1}>
                         <Actions post={post} />
                     </Flex>
-                    
+
                 </Flex>
             </Flex>
         </Link>

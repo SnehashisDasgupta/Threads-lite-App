@@ -13,6 +13,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const getFeedPost = async () => {
+      setPosts([]);
       try {
         const res = await fetch("/api/posts/feed");
         const data = await res.json();
@@ -43,7 +44,8 @@ const HomePage = () => {
       {/* If loader is false and there are posts, show the posts */}
       {!loader && posts.length > 0 && (
         posts.map((post) => (
-          <Post key={post._id} post={post} postedBy={post.postedBy} />
+          <Post
+           key={post._id} post={post} postedBy={post.postedBy} />
         )
         )
       )}

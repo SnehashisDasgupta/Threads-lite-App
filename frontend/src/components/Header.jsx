@@ -21,7 +21,7 @@ const Header = () => {
         <Image
           cursor={"pointer"}
           alt="logo"
-          w={6}
+          w={8}
           // if mode is dark, logo will be light_mode and vice-versa
           src={colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
           onClick={toggleColorMode}
@@ -31,7 +31,7 @@ const Header = () => {
           cursor={"pointer"}
           alt="logo"
           mx={"auto"}
-          w={10}
+          w={8}
           // if mode is dark, logo will be light_mode and vice-versa
           src={colorMode === "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
           onClick={toggleColorMode}

@@ -7,6 +7,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from '../atoms/userAtom';
 import useShowToast from "../hooks/useShowToast";
 import postAtom from "../atoms/postAtom";
+import { useParams } from "react-router-dom";
 
 const MAX_CHAR = 500;
 
@@ -20,13 +21,14 @@ const CreatePost = () => {
     const user = useRecoilValue(userAtom);
     const showToast = useShowToast();
     const [posts, setPosts] = useRecoilState(postAtom);
+    const { username } = useParams();
 
 
     const handleTextChange = (e) => {
         const inputText = e.target.value;
 
         //if no. of characters exceeds 'MAX_CHAR'
-        if (inputText.length > MAX_CHAR){
+        if (inputText.length > MAX_CHAR) {
             // show only the first 'MAX_CHAR' no. of characters
             const truncatedText = inputText.slice(0, MAX_CHAR);
             setPostText(truncatedText);
@@ -40,30 +42,33 @@ const CreatePost = () => {
     const handleCreatePost = async () => {
         setLoading(true);
         try {
-            const res = await fetch("api/posts/create",{
+            const res = await fetch("api/posts/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({postedBy: user._id, text: postText, img: imgUrl })
+                body: JSON.stringify({ postedBy: user._id, text: postText, img: imgUrl })
             });
-    
+
             const data = await res.json();
-            if(data.error){
+            if (data.error) {
                 showToast("Error", data.error, "error");
                 return;
             }
-    
+
             showToast("Success", "Post created successfully", "success");
             // if post is created, no need to refresh to see the new post, it will automatically show
-            setPosts([data, ...posts]);
+            // checks if user is in his profile or in other's profile
+            if (username === user.username) {
+                setPosts([data, ...posts]);
+            }
             onClose();
             setPostText("");
             setImgUrl("");
-            
+
         } catch (error) {
             showToast("Error", error, "error");
-        } finally{
+        } finally {
             setLoading(false);
         }
     };
@@ -135,7 +140,7 @@ const CreatePost = () => {
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button bg={'green.400'} _hover={{bg: 'green.600'}} mr={3} 
+                        <Button bg={'green.400'} _hover={{ bg: 'green.600' }} mr={3}
                             onClick={handleCreatePost}
                             isLoading={loading}
                         >

@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Image, Text, useToast } from "@chakra-ui/react"
+import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react"
 import { FaRegBookmark } from "react-icons/fa";
 import { Link } from "react-router-dom"
 import Actions from "./Actions";
@@ -6,17 +6,6 @@ import { useState } from "react";
 
 const UserPost = ({ likes, replies, postImg, postTitle }) => {
     const [liked, setLiked] = useState(false);
-    const toast = useToast();
-
-    const postSave = () => {
-        // show a pop-up message
-        toast({
-            description: "Saved post.",
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        });
-    };
 
     return (
         <Link to={"/dasguptasnehashis/post/001"}>
@@ -55,7 +44,6 @@ const UserPost = ({ likes, replies, postImg, postTitle }) => {
                             <FaRegBookmark onClick={(e) => {
                                 // it will not trigger the parent 'Link' tag , and will only trigger 'postSave()' function
                                 e.preventDefault();
-                                postSave();
                             }} />
 
                         </Flex>

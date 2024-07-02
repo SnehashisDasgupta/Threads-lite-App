@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Divider, Flex, Image, Text } from "@chakra-ui/react"
-import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import Actions from "../components/Actions";
 import Comment from "../components/Comment";
 import Loader from "../components/loader/Loader";
@@ -13,6 +13,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import postAtom from "../atoms/postAtom";
+import useBookmark from "../hooks/useBookmark";
 
 const PostPage = () => {
   const { loader } = useGetLoader();
@@ -23,9 +24,11 @@ const PostPage = () => {
 
   const [posts, setPosts] = useRecoilState(postAtom);
   const { user } = useGetUserProfile();
+  const [isBookmarked, toggleBookmark] = useBookmark(pid);
 
   useEffect(() => {
     const getPost = async () => {
+      setPosts([]);
       try {
         const res = await fetch(`/api/posts/${pid}`);
         const data = await res.json();
@@ -105,14 +108,28 @@ const PostPage = () => {
                 {formatDistanceToNow(new Date(currentPost.createdAt))} ago
               </Text>
 
-              <FaRegBookmark
-                title="Bookmark"
-                onClick={(e) => {
-                  // it will not trigger the parent 'Link' tag , and will only trigger 'postSave()' function
-                  e.preventDefault();
-                  showToast("Post Saved", "", "success");
-                }}
-              />
+              
+              {/* BOOKMARK */}
+              {isBookmarked ? (
+                <FaBookmark
+                  title="Unmark"
+                  cursor={"pointer"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleBookmark();
+                  }}
+                />
+              ) : (
+                <FaRegBookmark
+                  title="Mark"
+                  cursor={"pointer"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleBookmark()
+                  }}
+                />
+              )}
+
 
               {currentUser?._id === user?._id &&
                 <DeleteIcon 
