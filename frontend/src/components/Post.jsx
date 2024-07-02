@@ -18,7 +18,7 @@ const Post = ({ post, postedBy }) => {
     const navigate = useNavigate();
     const currentUser = useRecoilValue(userAtom);
     const [posts, setPosts] = useRecoilState(postAtom);
-    const [isBookmarked, toogleBookmark] = useBookmark(post._id);
+    const [isBookmarked, toggleBookmark] = useBookmark(post._id);
 
     useEffect(() => {
         const getUser = async () => {
@@ -158,7 +158,7 @@ const Post = ({ post, postedBy }) => {
                                         title="Unmark"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            toogleBookmark();
+                                            toggleBookmark();
                                         }}
                                     />
                                 ) : (
@@ -166,7 +166,7 @@ const Post = ({ post, postedBy }) => {
                                         title="Mark"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            toogleBookmark();
+                                            toggleBookmark();
                                         }}
                                     />
                                 )

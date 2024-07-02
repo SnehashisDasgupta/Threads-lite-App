@@ -46,26 +46,26 @@ const PostPage = () => {
     getPost();
   }, [showToast, pid, setPosts])
 
-  
+
   const currentPost = posts[0];
 
   const handleDeletePost = async () => {
     try {
-        if (!window.confirm("Are you sure you want to delete the post?")) return;
-        
-        const res = await fetch(`/api/posts/${currentPost._id}`, {
-            method: "DELETE",
-        });
-        const data = await res.json();
-        if (data.error) return showToast("Error", data.error, "error");
+      if (!window.confirm("Are you sure you want to delete the post?")) return;
 
-        showToast("Success", "Post deleted", "success");
-        navigate(`${user.username}`);
+      const res = await fetch(`/api/posts/${currentPost._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.error) return showToast("Error", data.error, "error");
+
+      showToast("Success", "Post deleted", "success");
+      navigate(`${user.username}`);
 
     } catch (error) {
-        showToast("Error", error.message, "error");
+      showToast("Error", error.message, "error");
     }
-};
+  };
 
   if (!currentPost) return null;
 
@@ -77,13 +77,13 @@ const PostPage = () => {
           <Flex my={5}>
             <Flex w={"full"} alignItems={"center"} gap={3}>
               {/* ProfilePic */}
-              <Avatar src={user.profilePic} size={"md"} name={user.name} 
+              <Avatar src={user.profilePic} size={"md"} name={user.name}
                 cursor={"pointer"}
                 // when click 'Avatar' it will navigate to the profilePage
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(`/${user.username}`)
-              }}
+                }}
               />
               <Flex>
                 {/* username */}
@@ -93,7 +93,7 @@ const PostPage = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     navigate(`/${user.username}`)
-                }}
+                  }}
                 >
                   {user.username}
                 </Text>
@@ -108,35 +108,35 @@ const PostPage = () => {
                 {formatDistanceToNow(new Date(currentPost.createdAt))} ago
               </Text>
 
-              
-              {/* BOOKMARK */}
-              {isBookmarked ? (
-                <FaBookmark
-                  title="Unmark"
-                  cursor={"pointer"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleBookmark();
-                  }}
-                />
+
+              {/* current user cannot save his own post and cannot delete other's post */}
+              {currentUser?._id !== user?._id ? (
+                // BOOKMARK 
+                isBookmarked ? (
+                  <FaBookmark
+                    title="Unmark"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleBookmark();
+                    }}
+                  />
+                ) : (
+                  <FaRegBookmark
+                    title="Mark"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleBookmark();
+                    }}
+                  />
+                )
               ) : (
-                <FaRegBookmark
-                  title="Mark"
+                currentUser?._id === user?._id &&
+                <DeleteIcon
                   cursor={"pointer"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleBookmark()
-                  }}
+                  onClick={handleDeletePost}
                 />
               )}
 
-
-              {currentUser?._id === user?._id &&
-                <DeleteIcon 
-                  cursor={"pointer"}
-                  onClick={handleDeletePost} 
-                />
-              }
 
             </Flex>
           </Flex>
@@ -171,12 +171,12 @@ const PostPage = () => {
           <Divider my={4} />
 
           {currentPost.replies.map((reply) => (
-             <Comment
-              key = {reply.id}
-              reply = {reply}
+            <Comment
+              key={reply.id}
+              reply={reply}
               // if it is last reply then don't show 'divider line'
-              lastReply = {reply._id === currentPost.replies[currentPost.replies.length-1]._id}
-             />
+              lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
+            />
           ))}
         </>
       )}
