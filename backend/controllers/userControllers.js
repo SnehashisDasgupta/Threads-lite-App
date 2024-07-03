@@ -44,7 +44,7 @@ const signupUser = async (req, res) => {
 
     // User already exists
     if (user) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({ error: "Username or email already exists" });
     }
 
     //random value used in the hashing process to add complexity to the resulting hash
@@ -179,6 +179,14 @@ const updateUser = async (req, res) => {
       return res
         .status(400)
         .json({ error: "You cannot update other user's profile" });
+
+    // CHeck if the new username is already taken by another user
+    if (username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser && existingUser._id.toString() != userId.toString()) {
+        return res.status(400).json({ error: "Username already taken" });
+      }
+    }
 
     if (password) {
       const salt = await bcrypt.genSalt(10);

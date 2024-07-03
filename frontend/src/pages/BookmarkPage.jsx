@@ -14,6 +14,12 @@ const Bookmark = () => {
 
   useEffect(() => {
     const fetchBookmarkedPosts = async () => {
+
+      if (!currentUser) {
+        showToast("Error", "User not authenticated", "error");
+        return;
+      }
+
       try {
         // function retrieves an array of all keys (strings) stored in the localStorage
         const keys = Object.keys(localStorage);
@@ -22,18 +28,24 @@ const Bookmark = () => {
 
         const postPromises = bookmarkedPostIds.map(async (key) => {
           const postId = key.split('-')[1];
-          const res = await fetch(`/api/posts/${postId}`);
-          const data = await res.json();
-          if (data.error) {
-            showToast("Error", data.error, "error");
+          try {
+            const res = await fetch(`/api/posts/${postId}`);
+            const data = await res.json();
+            if (data.error) {
+              showToast("Error", data.error, "error");
+              return null;
+            }
+            return data;
+          } catch (error) {
+            console.error(`Error fetching post ${postId}: ${error.message}`);
             return null;
           }
-          return data;
         });
 
         const posts = await Promise.all(postPromises);
-        // Filter out null values
-        setBookmarkedPosts(posts.filter(post => post !== null));
+        const filteredPosts = posts.filter(post => post !== null);
+        setBookmarkedPosts(filteredPosts);
+
       } catch (error) {
         showToast("Error", error.message, "error");
       }
@@ -45,11 +57,11 @@ const Bookmark = () => {
 
   return (
     <>
-      {loader && [...Array(bookmarkedPosts.length)].map((_, idx) => <Loader key={idx} />)}
-
-      {!loader && bookmarkedPosts.length === 0 &&
+      {bookmarkedPosts.length === 0 &&
         <h1>No bookmarked posts found.</h1>
       }
+
+      {loader && [...Array(bookmarkedPosts.length)].map((_, idx) => <Loader key={idx} />)}
 
       {!loader && bookmarkedPosts.length > 0 && (
         bookmarkedPosts.map((post) => (

@@ -3,7 +3,7 @@ import userAtom from "../atoms/userAtom";
 import useShowToast from "./useShowToast";
 
 const useLogout = () => {
-    const setUser = useRecoilState(userAtom);
+    const [, setUser] = useRecoilState(userAtom);
     const showToast = useShowToast();
 
     const logout = async () => {
@@ -19,7 +19,6 @@ const useLogout = () => {
             
             //"User logged out successfully" is not an error, it ends up going in if-loop and returning without clearing localStorage and setUser(null)
             if(data.error && data.error !== "User logged out successfully"){
-                // user-defined toast
                 showToast("Error", data.error, "error");
                 return;
             }
@@ -27,6 +26,7 @@ const useLogout = () => {
             localStorage.removeItem("user-threads");
             setUser(null);
 
+            showToast("Success", "Logged out successfully", "success");
         } catch (error) {
             showToast("Error", error, "error");
         }

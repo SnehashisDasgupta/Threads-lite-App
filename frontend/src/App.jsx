@@ -32,12 +32,12 @@ function App() {
             element={user ? (
               <>
                 <UserPage />
-
                 <CreatePost />
               </>
             ) : (
               <UserPage />
-            )} />
+            )} 
+          />
 
           <Route path="/:username/post/:pid" element={<PostPage />} />
 
