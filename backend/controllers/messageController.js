@@ -72,19 +72,27 @@ const getMessages = async (req, res) => {
 };
 
 const getConversations = async (req, res) => {
-    const userId = req.user._id;
-    try {
-        // find all conversations of the currentUser and fetch username and profilePic of otherUsers
-        const conversations = await Conversation.find({ participants: userId }).populate({
-            path: "participants",
-            select: "username profilePic",
-        })
+  const userId = req.user._id;
+  try {
+    // find all conversations of the currentUser and fetch username and profilePic of otherUsers
+    const conversations = await Conversation.find({
+      participants: userId,
+    }).populate({
+      path: "participants",
+      select: "username profilePic",
+    });
 
-        res.status(200).json(conversations);
-        
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    // remove the current user from the participants array to show username and profilePic of otherUsers only
+    conversations.forEach((conversation) => {
+      conversation.participants = conversation.participants.filter(
+        (participant) => participant._id.toString() !== userId.toString()
+      );
+    });
+
+    res.status(200).json(conversations);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export { sendMessage, getMessages, getConversations };
