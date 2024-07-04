@@ -9,6 +9,7 @@ Feature List:
 -   ❤️ Like/Unlike Post
 -   💬 Comment to a Post
 -   👥 Follow/Unfollow Users
+-   📑 Bookmark a post
 -   ❄️ Freeze Your Account
 -   🌓 Dark/Light Mode
 -   📱 Completely Responsive
