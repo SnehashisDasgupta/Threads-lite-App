@@ -4,7 +4,7 @@ import userAtom from "../atoms/userAtom";
 import { Link as RouterLink } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
 import { RxAvatar } from "react-icons/rx";
-import { BsFillChatQuoteFill } from "react-icons/bs";
+import { IoChatbubblesOutline } from "react-icons/io5";
 import useLogout from "../hooks/useLogout";
 import { FiLogOut } from "react-icons/fi";
 
@@ -43,13 +43,13 @@ const Header = () => {
       )}
 
       {user && (
-        <Flex alignItems={"center"} gap={4}>
+        <Flex alignItems={"center"} gap={3}>
           <Link as={RouterLink} to={`/${user.username}`}>
             <RxAvatar size={24} />
           </Link>
           
           <Link as={RouterLink} to={`/chat`}>
-            <BsFillChatQuoteFill size={20} />
+            <IoChatbubblesOutline size={24} />
           </Link>
 
           {/* LOGOUT */}

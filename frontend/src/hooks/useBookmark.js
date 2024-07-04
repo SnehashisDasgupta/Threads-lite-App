@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 
 const useBookmark = (postId) => {
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const currentUser = useRecoilValue(userAtom); // logged in user
+  const currentUser = useRecoilValue(userAtom);
+  const bookmarkKey = `isBookmarked-${postId}-${currentUser?._id}`;
 
-   // Retrieve bookmark state from local storage when the hook mounts
-  useEffect(() => {
-    const savedBookmarkState = localStorage.getItem(`isBookmarked-${postId}-${currentUser?._id}`);
-    if (savedBookmarkState !== null) {
-        setIsBookmarked(JSON.parse(savedBookmarkState));
-    }
-  }, [postId, currentUser]);
+  const [isBookmarked, setIsBookmarked] = useState(() => {
+    return JSON.parse(localStorage.getItem(bookmarkKey)) || false;
+  });
 
-  // Function to handle bookmark click
+  // if isBookmarked is false, remove it from localStorage
   const toggleBookmark = () => {
-    const newBookmarkState = !isBookmarked;
-    setIsBookmarked(newBookmarkState);
-    localStorage.setItem(`isBookmarked-${postId}-${currentUser?._id}`, JSON.stringify(newBookmarkState));
+    if (isBookmarked) {
+      localStorage.removeItem(bookmarkKey);
+      setIsBookmarked(false);
+    } else {
+      localStorage.setItem(bookmarkKey, JSON.stringify(true));
+      setIsBookmarked(true);
+    }
   };
 
   return [isBookmarked, toggleBookmark];
 };
 
-export default useBookmark
+export default useBookmark;

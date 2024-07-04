@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Flex, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast } from "@chakra-ui/react"
+import { Avatar, Box, Button, Flex, Image, Link, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast } from "@chakra-ui/react"
 import { BsBookmarksFill, BsInstagram } from 'react-icons/bs';
 import { CgMoreO } from 'react-icons/cg';
 import { useRecoilValue } from "recoil";
@@ -86,12 +86,16 @@ const UserHeader = ({ user }) => {
                     }} fontWeight={'bold'}>{user.name}</Text>
 
                     {/* USERNAME */}
-                    <Flex gap={2} alignItems={"center"}>
+                    <Flex gap={1} alignItems={"center"}>
                         <Text fontSize={{
                             base: "xs",
                             md: "sm",
                             'lg': "md"
-                        }}>{user.username}</Text>
+                        }}>
+                            {user.username}
+                        </Text>
+                        <Image src="/verified.png" w={4} h={4} ml={1} />
+
 
                         {/* thread.net */}
                         <Text fontSize={"xs"} bg={'gray.dark'} color={"gray.light"} p={1} borderRadius={'full'}>
