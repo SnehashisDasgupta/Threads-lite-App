@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { selectedConversationAtom } from "../atoms/messagesAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
+import { useNavigate } from "react-router-dom";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
@@ -13,12 +14,17 @@ const MessageContainer = () => {
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState([]);
   const currentUser = useRecoilValue(userAtom);
+  const navigate = useNavigate();
 
+  console.log(selectedConversation);
   useEffect(() => {
     const getMessages = async () => {
       setLoadingMessages(true);
       setMessages([]);
       try {
+        // if searchedUser is not in your conversation list then return without error
+        if (selectedConversation.mock) return;
+
         const res = await fetch(`/api/messages/${selectedConversation.userId}`)
         const data = await res.json();
         if (data.error) {
@@ -37,7 +43,7 @@ const MessageContainer = () => {
     };
 
     getMessages();
-  }, [showToast, selectedConversation.userId])
+  }, [showToast, selectedConversation.userId, selectedConversation.mock])
 
   return (
     <Flex
@@ -48,9 +54,13 @@ const MessageContainer = () => {
       flexDirection={"column"}
     >
       {/* Message header */}
-      <Flex w={"full"} h={12} alignItems={"center"} gap={2}>
+      <Flex w={"full"} h={12} alignItems={"center"} gap={2}
+        cursor={"pointer"}
+        // when click 'Avatar' it will navigate to the profilePage
+        onClick={() => navigate(`/${selectedConversation.username}`)}
+      >
 
-        <Avatar src={selectedConversation.userProfilePic} size={"sm"} />
+        <Avatar src={selectedConversation.userProfilePic} size={"sm"}/>
 
         <Text display={"flex"} alignItems={"center"}>
           {selectedConversation.username}

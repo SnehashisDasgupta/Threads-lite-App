@@ -25,6 +25,7 @@ const Conversation = ({ conversation }) => {
                 userId: user._id,
                 username: user.username,
                 userProfilePic: user.profilePic,
+                mock: conversation.mock,
             })
             }
             bg={
@@ -35,11 +36,7 @@ const Conversation = ({ conversation }) => {
         >
             <WrapItem>
                 <Avatar
-                    size={{
-                        base: "xs",
-                        sm: "sm",
-                        md: "md",
-                    }}
+                    size={"md"}
                     src={user.profilePic}
                 >
                     <AvatarBadge boxSize={"1em"} bg={"green.500"} />
