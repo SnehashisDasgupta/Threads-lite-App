@@ -13,10 +13,18 @@ const ChatPage = () => {
   const showToast = useShowToast();
   const [loadingConversation, setLoadingConversation] = useState(true);
   const [conversations, setConversations] = useRecoilState(conversationsAtom);
-  const [selectedConversation,] = useRecoilState(selectedConversationAtom);
+  const [selectedConversation,setSelectedConversation] = useRecoilState(selectedConversationAtom);
 
   useEffect(() => {
     const getConversations = async () => {
+      setSelectedConversation(
+        {
+          _id: "", 
+          userId: "", 
+          username: "", 
+          userProfilePic: "", 
+        }
+      )
       try {
         const res = await fetch("/api/messages/conversations");
         const data = await res.json();

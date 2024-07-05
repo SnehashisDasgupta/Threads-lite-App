@@ -9,7 +9,7 @@ import userAtom from "../atoms/userAtom";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
-  const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
+  const [selectedConversation, ] = useRecoilState(selectedConversationAtom);
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState([]);
   const currentUser = useRecoilValue(userAtom);
@@ -87,7 +87,7 @@ const MessageContainer = () => {
 
       </Flex>
 
-      <MessageInput />
+      <MessageInput setMessages={setMessages} />
     </Flex>
   );
 };
