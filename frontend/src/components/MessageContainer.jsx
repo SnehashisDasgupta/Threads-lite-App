@@ -16,7 +16,6 @@ const MessageContainer = () => {
   const currentUser = useRecoilValue(userAtom);
   const navigate = useNavigate();
 
-  console.log(selectedConversation);
   useEffect(() => {
     const getMessages = async () => {
       setLoadingMessages(true);

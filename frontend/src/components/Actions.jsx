@@ -1,4 +1,4 @@
-import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
@@ -10,11 +10,8 @@ const Actions = ({ post }) => {
     const [liked, setLiked] = useState(post?.likes.includes(user?._id));
     const [posts, setPosts] = useRecoilState(postAtom);
     const [isLiking, setIsLiking] = useState(false);
-    const [isReplying, setIsReplying] = useState(false);
-    const [reply, setReply] = useState("");
-
     const showToast = useShowToast();
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    // const { isOpen, onOpen, onClose } = useDisclosure()
 
     const handleLikeAndUnlike = async () => {
         if (!user) return showToast("Error", "Please logged in to Like a post", "error");
@@ -60,41 +57,7 @@ const Actions = ({ post }) => {
         }
     }
 
-    const handleReply = async () => {
-        if (!user) return showToast("Error", "Please logged-in to comment", "error");
-        if (isReplying) return;
-        setIsReplying(true);
-
-        try {
-            const res = await fetch(`/api/posts/reply/${post._id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ text: reply }),
-            });
-
-            const data = await res.json();
-            if (data.error) return showToast("Error", data.error, "error");
-
-            const updatedPosts = posts.map((p) => {
-                if (p._id === post._id) {
-                    return { ...p, replies: [...p.replies, data] };
-                }
-                return p;
-            });
-            setPosts(updatedPosts);
-            
-            showToast("Success", "Comment posted successfully", "success")
-            onClose();
-            setReply("");
-
-        } catch (error) {
-            showToast("Error", error.message, "error");
-        } finally {
-            setIsReplying(false);
-        }
-    }
+    
 
     return (
         <Flex flexDirection={"column"}>
@@ -128,9 +91,6 @@ const Actions = ({ post }) => {
                     role='img'
                     viewBox='0 0 24 24'
                     width='20'
-                    cursor={"pointer"}
-                    // when comment_svg clicked, modal triggered
-                    onClick={onOpen}
                 >
                     {/* when mouse is hovered, text is shown */}
                     <title>Comment</title>
@@ -164,33 +124,6 @@ const Actions = ({ post }) => {
                 </Text>
             </Flex>
 
-            <Modal
-                isOpen={isOpen}
-                onClose={onClose}
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader></ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6}>
-                        <FormControl>
-                            <Input placeholder={`Give a comment ${user?.username}...`}
-                                value={reply}
-                                onChange={(e) => setReply(e.target.value)}
-                            />
-                        </FormControl>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button size={"sm"} colorScheme='blue' mr={3}
-                            isLoading={isReplying}
-                            onClick={handleReply}
-                        >
-                            Reply
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
         </Flex>
     )
 }

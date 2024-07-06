@@ -138,7 +138,7 @@ const Post = ({ post, postedBy }) => {
                                     navigate(`/${user.username}`)
                                 }}
                             >
-                                {user?.username}
+                                {user?.username} 
                             </Text>
                             <Image src="/verified.png" w={4} h={4} ml={1} />
                         </Flex>

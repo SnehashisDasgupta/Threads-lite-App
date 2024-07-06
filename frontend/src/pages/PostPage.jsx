@@ -1,11 +1,11 @@
-import { Avatar, Box, Button, Divider, Flex, Image, Text } from "@chakra-ui/react"
+import { Avatar, Box, Button, Divider, Flex, Image, Input, Text } from "@chakra-ui/react"
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import Actions from "../components/Actions";
 import Comment from "../components/Comment";
 import Loader from "../components/loader/Loader";
 import useGetLoader from "../hooks/useGetLoader";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
@@ -14,6 +14,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import postAtom from "../atoms/postAtom";
 import useBookmark from "../hooks/useBookmark";
+import { IoSend } from "react-icons/io5";
 
 const PostPage = () => {
   const { loader } = useGetLoader();
@@ -25,6 +26,8 @@ const PostPage = () => {
   const [posts, setPosts] = useRecoilState(postAtom);
   const { user } = useGetUserProfile();
   const [isBookmarked, toggleBookmark] = useBookmark(pid);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getPost = async () => {
@@ -67,6 +70,38 @@ const PostPage = () => {
     }
   };
 
+  const handlePostComment = async () => {
+    if (!currentUser) return showToast("Error", "You must be logged in to give comment on a post", "error");
+
+    setLoading(true);
+    setComment("");
+    try {
+      const res = await fetch(`/api/posts/reply/${currentPost._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: comment }),
+      });
+
+      const data = await res.json();
+      if (data.error) return showToast("Error", data.error, "error");
+
+      const updatedPosts = posts.map((p) => {
+        if (p._id === currentPost._id) {
+          return { ...p, replies: [...p.replies, data] };
+        }
+        return p;
+      });
+      setPosts(updatedPosts);
+
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   if (!currentPost) return null;
 
   return (
@@ -108,13 +143,13 @@ const PostPage = () => {
                 {formatDistanceToNow(new Date(currentPost.createdAt))} ago
               </Text>
 
-
               {/* current user cannot save his own post and cannot delete other's post */}
               {currentUser?._id !== user?._id ? (
                 // BOOKMARK 
                 isBookmarked ? (
                   <FaBookmark
                     title="Unmark"
+                    cursor={"pointer"}
                     onClick={(e) => {
                       e.preventDefault();
                       toggleBookmark();
@@ -123,6 +158,7 @@ const PostPage = () => {
                 ) : (
                   <FaRegBookmark
                     title="Mark"
+                    cursor={"pointer"}
                     onClick={(e) => {
                       e.preventDefault();
                       toggleBookmark();
@@ -132,12 +168,13 @@ const PostPage = () => {
               ) : (
                 currentUser?._id === user?._id &&
                 <DeleteIcon
+                  title="Delete Post"
                   cursor={"pointer"}
                   onClick={handleDeletePost}
                 />
               )}
 
-
+              
             </Flex>
           </Flex>
 
@@ -159,12 +196,24 @@ const PostPage = () => {
           {/* A thin line to divide the post from comment section */}
           <Divider my={4} />
 
-          <Flex justifyContent={"space-between"}>
-            <Flex gap={2} alignItems={"center"}>
-              <Text fontSize={"2xl"}>👋</Text>
-              <Text color={"gray.light"}>Add a comment</Text>
+          <Flex justifyContent={"space-between"} alignItems={"center"} gap={2}>
+            <Flex flex={1} gap={2} alignItems={"center"}>
+              <Text fontSize="2xl">👋</Text>
+              <Input
+                variant="unstyled"
+                placeholder="Add a comment..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
             </Flex>
-            <Button>Get</Button>
+
+            <Button
+              isLoading={loading}
+              onClick={handlePostComment}
+              isDisabled={!comment.trim()}
+            >
+              <IoSend />
+            </Button>
           </Flex>
 
           {/* A thin line to divide the post from comment section */}
