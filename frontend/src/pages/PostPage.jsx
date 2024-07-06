@@ -14,7 +14,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import postAtom from "../atoms/postAtom";
 import useBookmark from "../hooks/useBookmark";
-import { IoSend } from "react-icons/io5";
+import { IoSendSharp } from "react-icons/io5";
 
 const PostPage = () => {
   const { loader } = useGetLoader();
@@ -212,7 +212,7 @@ const PostPage = () => {
               onClick={handlePostComment}
               isDisabled={!comment.trim()}
             >
-              <IoSend />
+              <IoSendSharp />
             </Button>
           </Flex>
 

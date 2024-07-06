@@ -5,6 +5,8 @@ import Loader from "../components/loader/Loader";
 import Post from "../components/Post";
 import { useRecoilState } from "recoil";
 import postAtom from "../atoms/postAtom";
+import { Flex, Text } from "@chakra-ui/react";
+import { FaUserPlus } from "react-icons/fa";
 
 const HomePage = () => {
   const { loader } = useGetLoader();
@@ -38,14 +40,25 @@ const HomePage = () => {
 
       {/* If user doesn't follow anyone */}
       {!loader && posts.length === 0 &&
-        <h1>Follow someone to see the feed</h1>
+        <Flex
+          flex={65}
+          borderRadius={"md"}
+          p={2}
+          flexDir={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          height={"400px"}
+        >
+          <FaUserPlus size={100} />
+          <Text fontSize={20}>Please follow someone to see post</Text>
+        </Flex>
       }
 
       {/* If loader is false and there are posts, show the posts */}
       {!loader && posts.length > 0 && (
         posts.map((post) => (
           <Post
-           key={post._id} post={post} postedBy={post.postedBy} />
+            key={post._id} post={post} postedBy={post.postedBy} />
         )
         )
       )}
