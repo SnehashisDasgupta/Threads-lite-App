@@ -2,19 +2,63 @@ import { Avatar, Divider, Flex, Image, Skeleton, SkeletonCircle, Text, useColorM
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import useShowToast from "../hooks/useShowToast";
-import { useEffect, useState } from "react";
-import { selectedConversationAtom } from "../atoms/messagesAtom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect, useRef, useState } from "react";
+import { conversationsAtom, selectedConversationAtom } from "../atoms/messagesAtom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../context/SocketContext";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
-  const [selectedConversation, ] = useRecoilState(selectedConversationAtom);
+  const [selectedConversation,] = useRecoilState(selectedConversationAtom);
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState([]);
   const currentUser = useRecoilValue(userAtom);
   const navigate = useNavigate();
+  const { socket } = useSocket();
+  const setConversations = useSetRecoilState(conversationsAtom);
+  const lastMessageRef = useRef(null);
+
+  useEffect(() => {
+    const handleNewMessage = (message) => {
+
+      if (selectedConversation._id === message.conversationId) {
+        // adding new message in prevMessages array
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
+
+      // update lastMessage for both the users in real-time
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === message.conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                text: message.text,
+                sender: message.sender,
+              },
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations;
+      })
+    };
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    }
+  }, [socket, selectedConversation._id, setConversations]);
+
+
+  // Smooth scrolling automatically when open a conversation
+  useEffect(() => {
+    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
 
   useEffect(() => {
     const getMessages = async () => {
@@ -33,11 +77,10 @@ const MessageContainer = () => {
         setMessages(data);
 
       } catch (error) {
-        showToast("Error", error.Message, "error");
+        showToast("Error", error.message, "error");
+        setMessages([]);
       } finally {
-        setTimeout(() => {
-          setLoadingMessages(false);
-        }, 2000)
+        setLoadingMessages(false);
       }
     };
 
@@ -59,7 +102,7 @@ const MessageContainer = () => {
         onClick={() => navigate(`/${selectedConversation.username}`)}
       >
 
-        <Avatar src={selectedConversation.userProfilePic} size={"sm"}/>
+        <Avatar src={selectedConversation.userProfilePic} size={"sm"} />
 
         <Text display={"flex"} alignItems={"center"}>
           {selectedConversation.username}
@@ -74,7 +117,7 @@ const MessageContainer = () => {
       <Flex flexDir={"column"} gap={4} my={4} p={2} height={"480px"} overflowY={"auto"}>
         {/* Skeleton Loader */}
         {loadingMessages &&
-          messages.map((_, i) => (
+          [...Array(10)].map((_, i) => (
             <Flex key={i} gap={2} alignItems={"center"} p={1} borderRadius={"md"}
               alignSelf={i % 2 === 0 ? "flex-start" : "flex-end"}
             >
@@ -89,9 +132,17 @@ const MessageContainer = () => {
         }
 
         {!loadingMessages && (
-          messages.map((message) => (
-            <Message key={message._id} message={message} ownMessage={currentUser._id === message.sender} />
-          ))
+          messages.map((message, index) => {
+            const isLastMessage = index === messages.length - 1;
+            return (
+              <Flex key={message._id}
+                direction={"column"}
+                ref={isLastMessage ? lastMessageRef : null} //used to scroll to the last message automatically
+              >
+                <Message message={message} ownMessage={currentUser._id === message.sender} />
+              </Flex>
+            );
+          })
         )}
 
       </Flex>

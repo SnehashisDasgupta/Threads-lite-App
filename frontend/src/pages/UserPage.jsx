@@ -52,7 +52,7 @@ const UserPage = () => {
     <>
       <UserHeader user={user} />
 
-      {loader && [...Array(posts.length)].map((_, idx) => <Loader key={idx} />)}
+      {loader && [...Array(3)].map((_, idx) => <Loader key={idx} />)}
 
       {!loader && posts.length === 0 &&
 

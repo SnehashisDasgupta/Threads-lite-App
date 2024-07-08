@@ -36,7 +36,7 @@ const HomePage = () => {
   return (
     <>
       {/* If loader is true, show the loader */}
-      {loader && [...Array(posts.length)].map((_, idx) => <Loader key={idx} />)}
+      {loader && [...Array(3)].map((_, idx) => <Loader key={idx} />)}
 
       {/* If user doesn't follow anyone */}
       {!loader && posts.length === 0 &&

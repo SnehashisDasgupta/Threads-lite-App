@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { conversationsAtom, selectedConversationAtom } from "../atoms/messagesAtom";
 import userAtom from "../atoms/userAtom";
+import { useSocket } from "../context/SocketContext";
 
 const ChatPage = () => {
   const [loadingConversation, setLoadingConversation] = useState(true);
@@ -17,6 +18,7 @@ const ChatPage = () => {
   const [searchingUser, setSearchingUser] = useState(false);
   const showToast = useShowToast();
   const currentUser = useRecoilValue(userAtom);
+  const { onlineUsers } = useSocket();
 
   useEffect(() => {
     const getConversations = async () => {
@@ -162,7 +164,7 @@ const ChatPage = () => {
 
           {/* Loader Skeleton for CONVERSATION */}
           {loadingConversation &&
-            conversations.map((_, i) => (
+            [...Array(5)].map((_, i) => (
               <Flex key={i} gap={4} alignItems={"center"} p={1} borderRadius={"md"}>
                 <Box>
                   <SkeletonCircle size={10} />
@@ -177,7 +179,11 @@ const ChatPage = () => {
 
           {!loadingConversation && (
             conversations.map((conversation) => (
-              <Conversation key={conversation._id} conversation={conversation} />
+              <Conversation
+                key={conversation._id}
+                isOnline={onlineUsers.includes(conversation.participants[0]._id)}
+                conversation={conversation}
+              />
             ))
           )}
         </Flex>

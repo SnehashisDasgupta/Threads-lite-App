@@ -11,6 +11,8 @@ npm install recoil
 # date of post
 npm i date-fns
 
+npm i socket.io-client
+
 # BACKEND
 npm i express jsonwebtoken bcryptjs dotenv mongoose cookie-parser
 
@@ -18,3 +20,5 @@ npm i -D nodemon
 
 # store profilePic(s) in cloud by using cloudinary
 npm i cloudinary
+
+npm i socket.io
