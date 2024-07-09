@@ -15,6 +15,11 @@ const messageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // sending images in chat
+    img: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

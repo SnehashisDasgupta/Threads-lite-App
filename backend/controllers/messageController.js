@@ -2,10 +2,12 @@ import { text } from "express";
 import Conversation from "../models/conversationModel.js";
 import Message from "../models/messageModel.js";
 import { getRecipientSocketId, io } from "../socket/socket.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const sendMessage = async (req, res) => {
   try {
     const { recipientId, message } = req.body;
+    let { img } = req.body;
     const senderId = req.user._id;
 
     // find the conversation where the current senderId and recipientId is present.
@@ -25,10 +27,19 @@ const sendMessage = async (req, res) => {
       await conversation.save();
     }
 
+    // if user is sending image
+    if (img) {
+      // upload it to cloudinary
+      const uploadedResponse = await cloudinary.uploader.upload(img);
+      // get a url
+      img = uploadedResponse.secure_url;
+    }
+
     const newMessage = new Message({
       conversationId: conversation._id,
       sender: senderId,
       text: message,
+      img: img || "",
     });
 
     await Promise.all([

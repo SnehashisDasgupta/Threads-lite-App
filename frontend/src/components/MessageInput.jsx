@@ -1,19 +1,28 @@
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/react"
-import { useState } from "react";
+import { Flex, Image, Input, InputGroup, InputRightElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Spinner, useDisclosure } from "@chakra-ui/react"
+import { useRef, useState } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import useShowToast from "../hooks/useShowToast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { conversationsAtom, selectedConversationAtom } from "../atoms/messagesAtom";
+import { BsFillImageFill } from "react-icons/bs";
+import usePreviewImg from "../hooks/usePreviewImg";
 
 const MessageInput = ({ setMessages }) => {
     const [messageText, setMessageText] = useState("");
     const showToast = useShowToast();
     const selectedConversation = useRecoilValue(selectedConversationAtom);
     const setConversation = useSetRecoilState(conversationsAtom);
+    const imageRef = useRef(null);
+    const { onClose } = useDisclosure();
+    const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
+    const [isSending, setIsSending] = useState(false);
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (!messageText) return;
+        if (!messageText && !imgUrl) return;
+        if (isSending) return;
+
+        setIsSending(true);
 
         try {
             const res = await fetch("/api/messages", {
@@ -24,6 +33,7 @@ const MessageInput = ({ setMessages }) => {
                 body: JSON.stringify({
                     message: messageText,
                     recipientId: selectedConversation.userId,
+                    img: imgUrl,
                 }),
             })
             const data = await res.json();
@@ -33,6 +43,7 @@ const MessageInput = ({ setMessages }) => {
             }
 
             setMessageText("");
+            setImgUrl("");
             // add new data[message] to old messages array
             setMessages((messages) => [...messages, data]);
 
@@ -55,22 +66,63 @@ const MessageInput = ({ setMessages }) => {
 
         } catch (error) {
             showToast("Error", error.message, "error");
+        } finally {
+            setIsSending(false);
         }
     }
 
     return (
-        <form onSubmit={handleSendMessage}>
-            <InputGroup>
-                <Input w={"full"} placeholder="Type a message"
-                    onChange={(e) => setMessageText(e.target.value)}
-                    value={messageText}
-                />
-                <InputRightElement onClick={handleSendMessage} cursor={"pointer"}>
-                    <IoSendSharp />
-                </InputRightElement>
-            </InputGroup>
-        </form>
+        <Flex gap={2} alignItems={"center"} w="full">
+            <form onSubmit={handleSendMessage} style={{ flex: 5 }}>
+                <InputGroup>
+                    <Input
+                        w={"full"}
+                        placeholder="Type a message"
+                        onChange={(e) => setMessageText(e.target.value)}
+                        value={messageText}
+                    />
+                    <InputRightElement>
+                        <BsFillImageFill
+                            size={20}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => imageRef.current.click()}
+                        />
+                        <Input type="file" hidden ref={imageRef} onChange={handleImageChange} />
+                    </InputRightElement>
+                </InputGroup>
+            </form>
+
+            {/* Send icon */}
+            <Flex onClick={handleSendMessage} ml={2}>
+                <IoSendSharp size={24} cursor={"pointer"} onClick={handleSendMessage} />
+            </Flex>
+
+            {/* Image Preview */}
+            <Modal
+                isOpen={imgUrl}
+                onClose={() => {
+                    onClose();
+                    setImgUrl("");
+                }}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Flex p={5} mt={5} w={"full"}>
+                            <Image borderRadius={4} src={imgUrl} />
+                        </Flex>
+                        <Flex justifyContent={"flex-end"} my={2}>
+                            {!isSending ? (
+                                <IoSendSharp size={24} cursor={"pointer"} onClick={handleSendMessage} />
+                            ) : (
+                                <Spinner size={"md"} />
+                            )}
+                        </Flex>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+        </Flex>
     )
 }
-
 export default MessageInput
