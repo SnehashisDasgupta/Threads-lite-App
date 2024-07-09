@@ -4,14 +4,14 @@ import MessageInput from "./MessageInput";
 import useShowToast from "../hooks/useShowToast";
 import { useEffect, useRef, useState } from "react";
 import { conversationsAtom, selectedConversationAtom } from "../atoms/messagesAtom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
-  const [selectedConversation,] = useRecoilState(selectedConversationAtom);
+  const selectedConversation = useRecoilValue(selectedConversationAtom);
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState([]);
   const currentUser = useRecoilValue(userAtom);
@@ -20,6 +20,7 @@ const MessageContainer = () => {
   const setConversations = useSetRecoilState(conversationsAtom);
   const lastMessageRef = useRef(null);
 
+  // socket- real-time message and lastMessage in conversation
   useEffect(() => {
     const handleNewMessage = (message) => {
 
@@ -53,6 +54,38 @@ const MessageContainer = () => {
     }
   }, [socket, selectedConversation._id, setConversations]);
 
+  // Mark messages as seen and handle real-time seen updates
+  useEffect(() => {
+    const markMessagesAsSeen = () => {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage && lastMessage.sender !== currentUser._id) {
+        socket.emit("markMessagesAsSeen", {
+          conversationId: selectedConversation._id,
+          userId: selectedConversation.userId
+        });
+      }
+    };
+    // Mark messages as seen when the selected conversation changes
+    if (selectedConversation && messages.length > 0) {
+      markMessagesAsSeen();
+    }
+
+    const handleMessagesSeen = ({ conversationId }) => {
+      /// Update seen status of messages when messagesSeen event is triggered
+      if (selectedConversation._id === conversationId) {
+        setMessages((prev) => prev.map((message) => ({
+          ...message,
+          seen: true
+        })));
+      }
+    };
+    socket.on("messagesSeen", handleMessagesSeen);
+
+    return () => {
+      socket.off("messagesSeen", handleMessagesSeen);
+    };
+
+  }, [socket, currentUser._id, messages, selectedConversation]);
 
   // Smooth scrolling automatically when open a conversation
   useEffect(() => {
