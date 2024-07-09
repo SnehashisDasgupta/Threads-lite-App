@@ -18,7 +18,7 @@ const ChatPage = () => {
   const [searchingUser, setSearchingUser] = useState(false);
   const showToast = useShowToast();
   const currentUser = useRecoilValue(userAtom);
-  const { onlineUsers } = useSocket();
+  const { socket, onlineUsers } = useSocket();
 
   useEffect(() => {
     const getConversations = async () => {
@@ -53,6 +53,31 @@ const ChatPage = () => {
     getConversations();
   }, [showToast, setConversations, setSelectedConversation]);
 
+  // seen status in the lastMessage from conversations
+  useEffect(() => {
+    socket?.on("messagesSeen", ({ conversationId }) => {
+      setConversations((prev) => {
+        const updatedConversations = prev.map((conversation) => {
+          if (conversation._id === conversationId) {
+            return {
+              ...conversation,
+              lastMessage: {
+                ...conversation.lastMessage,
+                seen: true,
+              },
+            };
+          }
+          return conversation;
+        });
+        return updatedConversations
+      })
+    });
+
+    return () => {
+      socket?.off("messagesSeen");
+    };
+  }, [socket, setConversations]);
+
   const handleConversationSearch = async (e) => {
     e.preventDefault();
     setSearchingUser(true);
@@ -84,6 +109,7 @@ const ChatPage = () => {
         return;
       }
 
+      // If conversation doesn't exist between currentUser and searchedUser
       const mockConversation = {
         mock: true,
         lastMessage: {
@@ -219,4 +245,4 @@ const ChatPage = () => {
   )
 }
 
-export default ChatPage
+export default ChatPage;

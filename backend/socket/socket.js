@@ -27,12 +27,19 @@ io.on("connection", (socket) => {
 
   io.emit("getOnlineUsers", Object.keys(userSocketMap)); //OUTPUT [1,2,3] // array of ids
 
+  // seen msg functionality
   socket.on("markMessagesAsSeen", async ({ conversationId, userId }) => {
     try {
       // find all messages of conversationId with seen:false and make seen:true.
       await Message.updateMany(
         { conversationId: conversationId, seen: false },
         { $set: { seen: true } }
+      );
+
+      // seen: true for lastMessage in the Conversation
+      await Conversation.updateOne(
+        { _id: conversationId },
+        { $set: { "lastMessage.seen": true } }
       );
 
       // Send real-time notification to the user that messages have been seen

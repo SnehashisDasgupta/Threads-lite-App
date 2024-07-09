@@ -1,4 +1,4 @@
-import { Avatar, AvatarBadge, Flex, Image, Stack, Text, useColorMode, useColorModeValue, WrapItem } from "@chakra-ui/react"
+import { Avatar, AvatarBadge, Box, Flex, Image, Stack, Text, useColorMode, useColorModeValue, WrapItem } from "@chakra-ui/react"
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from '../atoms/userAtom';
 import { BsCheck2All } from "react-icons/bs";
@@ -50,8 +50,12 @@ const Conversation = ({ conversation, isOnline }) => {
 
                 <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
                     {/* if lastMessage is send by currentUser then show doubleTick icon before lastMessage */}
-                    {currentUser._id === lastMessage.sender ?
-                        <BsCheck2All size={16} /> : ""
+                    {currentUser._id === lastMessage.sender ? (
+                        // if user see the msg, then turn doubleTicks to blue color
+                        <Box color={lastMessage.seen ? "blue.400" : ""}>
+                            <BsCheck2All size={16} />
+                        </Box>
+                    ) : ""
                     }
 
                     {/* only show first 20 characters of the lastMessage if it exceeds 20 characters in conversation */}

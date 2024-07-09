@@ -70,6 +70,7 @@ const MessageContainer = () => {
       markMessagesAsSeen();
     }
 
+
     const handleMessagesSeen = ({ conversationId }) => {
       /// Update seen status of messages when messagesSeen event is triggered
       if (selectedConversation._id === conversationId) {
