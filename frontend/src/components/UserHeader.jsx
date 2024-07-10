@@ -4,18 +4,15 @@ import { CgMoreO } from 'react-icons/cg';
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import useShowToast from "../hooks/useShowToast";
 import { FaLink } from "react-icons/fa";
+import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
 // { user } -> user's profile
 const UserHeader = ({ user }) => {
     const toast = useToast();
-    const showToast = useShowToast();
     const currentUser = useRecoilValue(userAtom); // logged in user
-    const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
-    const [updating, setUpdating] = useState(false);
     const navigate = useNavigate();
+    const { handleFollowUnfollow, updating, following } = useFollowUnfollow(user);
 
     //Profile URL copied in the clipboard
     const copyURL = () => {
@@ -31,48 +28,6 @@ const UserHeader = ({ user }) => {
             });
         });
     };
-
-    const handleFollowUnfollow = async () => {
-        //if not logged in
-        if (!currentUser) {
-            showToast("Error", "Please login to follow", "error");
-            return;
-        }
-
-        if (updating) return;
-
-        setUpdating(true);
-
-        try {
-            const res = await fetch(`/api/users/follow/${user._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            const data = await res.json();
-            if (data.error) {
-                showToast("Error", data.error, "error");
-                return;
-            }
-
-            if (following) {
-                showToast("Success", `Unfollowed ${user.username}`, "success");
-                user.followers.pop(); // remove user._id from followers_array of the user and decrement followers count
-            } else {
-                showToast("Success", `Followed ${user.username}`, "success");
-                user.followers.push(currentUser?._id); //push user.id of currentUser._id in followers_array and increment followers count
-            }
-            setFollowing(!following);
-
-        } catch (error) {
-            showToast("Error", error, "error");
-        } finally {
-            setUpdating(false);
-        }
-    };
-
 
     return (
         <VStack spacing={4} alignItems='start'>

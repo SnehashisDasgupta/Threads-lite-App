@@ -44,7 +44,9 @@ const signupUser = async (req, res) => {
 
     // User already exists
     if (user) {
-      return res.status(400).json({ error: "Username or email already exists" });
+      return res
+        .status(400)
+        .json({ error: "Username or email already exists" });
     }
 
     //random value used in the hashing process to add complexity to the resulting hash
@@ -238,6 +240,39 @@ const updateUser = async (req, res) => {
   }
 };
 
+const getSuggestedUsers = async (req, res) => {
+  try {
+    // exclude currentUser and users that currentUser is already following
+    const userId = req.user._id; //currentUser
+
+    //returns userId stored in following array of currentUser
+    const usersFollowedByYou = await User.findById(userId).select("following");
+
+    // give 10 users from userModel except the currentUser
+    const users = await User.aggregate([
+      {
+        $match: {
+          _id: { $ne: userId }, // except currentUser
+        },
+      },
+      {
+        $sample: { size: 10 },
+      },
+    ]);
+
+    // select userId from 'users' whom the currentUser doesn't follows
+    const filteredUsers = users.filter(
+      (user) => !usersFollowedByYou.following.includes(user._id)
+    );
+    const suggestedusers = filteredUsers.slice(0, 4); //only show 4 users from filteredUsers
+    suggestedusers.forEach((user) => (user.password = null)); // dont return password
+
+    res.status(200).json(suggestedusers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export {
   signupUser,
   loginUser,
@@ -245,4 +280,5 @@ export {
   followUnFollowUser,
   updateUser,
   getUserProfile,
+  getSuggestedUsers,
 };
