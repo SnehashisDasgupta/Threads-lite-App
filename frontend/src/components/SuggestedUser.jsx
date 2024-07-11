@@ -5,8 +5,6 @@ import useFollowUnfollow from "../hooks/useFollowUnfollow";
 const SuggestedUser = ({ user }) => {
     const { handleFollowUnfollow, updating, following } = useFollowUnfollow(user);
 
-    console.log(user);
-
     return (
         <Flex gap={2} justifyContent={"space-between"} alignItems={"center"}>
             {/* left side */}
@@ -34,8 +32,6 @@ const SuggestedUser = ({ user }) => {
                     opacity: ".8",
                 }}
             >
-                
-                {console.log("Button: ", following)}
                 {following ? "Unfollow" : "Follow"}
             </Button>
         </Flex>

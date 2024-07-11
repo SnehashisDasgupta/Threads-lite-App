@@ -97,6 +97,13 @@ const MessageInput = ({ setMessages }) => {
                 <IoSendSharp size={24} cursor={"pointer"} onClick={handleSendMessage} />
             </Flex>
 
+            {/* <Modal isOpen={isOpen} onClose={onClose} isCentered>
+            <ModalOverlay />
+            <ModalContent w="50vw" h="50vh">
+                <Image src={imgSrc} w=" 100%" h="100%" objectFit="contain" />
+            </ModalContent>
+        </Modal> */}
+
             {/* Image Preview */}
             <Modal
                 isOpen={imgUrl}
@@ -104,21 +111,33 @@ const MessageInput = ({ setMessages }) => {
                     onClose();
                     setImgUrl("");
                 }}
+                isCentered
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Flex p={5} mt={5} w={"full"}>
-                            <Image borderRadius={4} src={imgUrl} />
-                        </Flex>
-                        <Flex justifyContent={"flex-end"} my={2}>
+                    <ModalBody p={0} border={"5px solid"}>
+                        <Image src={imgUrl} w={"100%"} h={"100%"} objectFit={"contain"} />
+                        <ModalCloseButton
+                            position={"absolute"}
+                            top={"5px"}
+                            right={"5px"}
+                            style={{ cursor: "pointer" }}
+                        />
+                        <Flex
+                            position={"absolute"}
+                            bottom={"20px"}
+                            right={"20px"}
+                            style={{ cursor: "pointer" }}
+                            onClick={handleSendMessage}
+                        >
+
                             {!isSending ? (
-                                <IoSendSharp size={24} cursor={"pointer"} onClick={handleSendMessage} />
+                                <IoSendSharp size={30} />
                             ) : (
                                 <Spinner size={"md"} />
                             )}
                         </Flex>
+
                     </ModalBody>
                 </ModalContent>
             </Modal>

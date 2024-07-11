@@ -8,6 +8,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
+import notificationSound from "../assets/sound/notification.mp3";
 
 const MessageContainer = () => {
   const showToast = useShowToast();
@@ -27,6 +28,12 @@ const MessageContainer = () => {
       if (selectedConversation._id === message.conversationId) {
         // adding new message in prevMessages array
         setMessages((prevMessages) => [...prevMessages, message]);
+      }
+
+      // when you
+      if (!document.hasFocus()){
+        const sound = new Audio(notificationSound);
+        sound.play();
       }
 
       // update lastMessage for both the users in real-time

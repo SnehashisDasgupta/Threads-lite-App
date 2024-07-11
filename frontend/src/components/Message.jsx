@@ -9,12 +9,20 @@ const ImageModal = ({ isOpen, onClose, imgSrc }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent
+                w={{ base: "300px", md: "350px" }}
+                h={{ base: "auto", md: "50vh" }}
+                maxW="90vw"
+                maxH="90vh"
+                p={0}
+                borderRadius="none"
+            >
                 <ModalBody p={0}>
-                    <Image src={imgSrc} objectFit={"contain"} />
+                    <Image src={imgSrc} w="100%" h="100%" objectFit="contain" />
                 </ModalBody>
             </ModalContent>
         </Modal>
+
     )
 }
 
@@ -58,7 +66,7 @@ const Message = ({ message, ownMessage }) => {
                         <>
                             <Flex
                                 mt={5}
-                                w={"200px"}
+                                w={"190px"}
                                 borderWidth={3}
                                 borderRadius={4}
                                 borderColor={"green.800"}
