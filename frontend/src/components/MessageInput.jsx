@@ -114,9 +114,16 @@ const MessageInput = ({ setMessages }) => {
                 isCentered
             >
                 <ModalOverlay />
-                <ModalContent>
-                    <ModalBody p={0} border={"5px solid"}>
-                        <Image src={imgUrl} w={"100%"} h={"100%"} objectFit={"contain"} />
+                <ModalContent
+                    w={{ base: "300px", md: "350px" }}
+                    h={{ base: "auto", md: "50vh" }}
+                    maxW="90vw"
+                    maxH="90vh"
+                    p={0}
+                    borderRadius="none"
+                >
+                    <ModalBody p={0}>
+                        <Image src={imgUrl} w="100%" h="100%" objectFit="contain" />
                         <ModalCloseButton
                             position={"absolute"}
                             top={"5px"}
@@ -132,12 +139,11 @@ const MessageInput = ({ setMessages }) => {
                         >
 
                             {!isSending ? (
-                                <IoSendSharp size={30} />
+                                <IoSendSharp size={25} />
                             ) : (
                                 <Spinner size={"md"} />
                             )}
                         </Flex>
-
                     </ModalBody>
                 </ModalContent>
             </Modal>
