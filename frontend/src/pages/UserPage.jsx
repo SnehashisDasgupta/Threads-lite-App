@@ -9,7 +9,7 @@ import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
 import postAtom from "../atoms/postAtom";
-import { FaRegSadTear } from "react-icons/fa";
+import { FaRegSadTear, FaUserSlash } from "react-icons/fa";
 
 const UserPage = () => {
   const { loading, user } = useGetUserProfile();
@@ -22,6 +22,7 @@ const UserPage = () => {
   useEffect(() => {
 
     const getPosts = async () => {
+      if (!user) return;
       try {
         const res = await fetch(`/api/posts/user/${username}`);
         const data = await res.json();
@@ -37,7 +38,7 @@ const UserPage = () => {
     }
 
     getPosts();
-  }, [username, showToast, setPosts]);
+  }, [username, showToast, setPosts, user]);
 
   if (!user && loader) {
     return (
@@ -46,7 +47,20 @@ const UserPage = () => {
       </Flex>
     )
   }
-  if (!user && !loading) return <h1>User not found</h1>;
+  if (!user && !loading) return (
+    <Flex
+      flex={65}
+      borderRadius={"md"}
+      p={2}
+      flexDir={"column"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      height={"400px"}
+    >
+      <FaUserSlash size={100} />
+      <Text fontSize={20}>User not found</Text>
+    </Flex>
+  );
 
   return (
     <>

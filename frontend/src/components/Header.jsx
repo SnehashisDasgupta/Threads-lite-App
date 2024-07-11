@@ -7,6 +7,7 @@ import { RxAvatar } from "react-icons/rx";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import useLogout from "../hooks/useLogout";
 import { FiLogOut } from "react-icons/fi";
+import { MdOutlineSettings } from "react-icons/md";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -50,6 +51,10 @@ const Header = () => {
           
           <Link as={RouterLink} to={`/chat`}>
             <IoChatbubblesOutline size={24} />
+          </Link>
+
+          <Link as={RouterLink} to={`/settings`}>
+            <MdOutlineSettings size={24} />
           </Link>
 
           {/* LOGOUT */}

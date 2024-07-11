@@ -12,6 +12,7 @@ import UpdateProfilePage from "./pages/UpdateProfilePage";
 import CreatePost from "./components/CreatePost";
 import ChatPage from "./pages/ChatPage";
 import BookmarkPage from "./pages/BookmarkPage";
+import SettingsPage from "./pages/SettingsPage";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -45,6 +46,8 @@ function App() {
           <Route path="/chat" element={user ? <ChatPage /> : <Navigate to={"/auth"} />} />
 
           <Route path="/bookmarks" element={user ? <BookmarkPage /> : <Navigate to={"/auth"} />} />
+
+          <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to={"/auth"} />} />
 
         </Routes>
       </Container>

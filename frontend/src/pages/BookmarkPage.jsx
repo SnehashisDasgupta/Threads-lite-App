@@ -61,7 +61,7 @@ const Bookmark = () => {
         <h1>No bookmarked posts found.</h1>
       }
 
-      {loader && [...Array(bookmarkedPosts.length)].map((_, idx) => <Loader key={idx} />)}
+      {loader && [...Array(3)].map((_, idx) => <Loader key={idx} />)}
 
       {!loader && bookmarkedPosts.length > 0 && (
         bookmarkedPosts.map((post) => (
