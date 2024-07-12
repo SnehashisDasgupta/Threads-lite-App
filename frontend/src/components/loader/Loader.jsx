@@ -27,7 +27,7 @@ const ThreadSkeleton = () => {
         </Flex> */}
 
         {/* Comment section Skeleton */}
-        <Skeleton h="9" w={40} mb="2" borderRadius={6} />
+        <Skeleton h="9" w={20} mb="2" borderRadius={6} />
 
       </Flex>
     </Flex>
