@@ -106,13 +106,13 @@ const PostPage = () => {
 
   return (
     <>
-      {loader && [...Array(1)].map((_, idx) => <Loader key={idx} />)}
+      {loader && <Loader />}
       {!loader && (
         <>
           <Flex my={5}>
             <Flex w={"full"} alignItems={"center"} gap={3}>
               {/* ProfilePic */}
-              <Avatar src={user.profilePic} size={"md"} name={user.name}
+              <Avatar src={user?.profilePic} size={"md"} name={user?.name}
                 cursor={"pointer"}
                 // when click 'Avatar' it will navigate to the profilePage
                 onClick={(e) => {
@@ -127,10 +127,10 @@ const PostPage = () => {
                   // when click 'username' it will navigate to the profilePage
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/${user.username}`)
+                    navigate(`/${user?.username}`)
                   }}
                 >
-                  {user.username}
+                  {user?.username}
                 </Text>
                 {/* BlueTick */}
                 <Image src="/verified.png" w={4} h={4} ml={4} />
@@ -140,7 +140,7 @@ const PostPage = () => {
             {/* time[when the post is uploaded] and threeDots */}
             <Flex gap={4} alignItems={"center"}>
               <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
-                {formatDistanceToNow(new Date(currentPost.createdAt))} ago
+                {formatDistanceToNow(new Date(currentPost?.createdAt))} ago
               </Text>
 
               {/* current user cannot save his own post and cannot delete other's post */}
@@ -174,7 +174,7 @@ const PostPage = () => {
                 />
               )}
 
-              
+
             </Flex>
           </Flex>
 
@@ -221,10 +221,10 @@ const PostPage = () => {
 
           {currentPost.replies.map((reply) => (
             <Comment
-              key={reply.id}
+              key={reply._id}
               reply={reply}
               // if it is last reply then don't show 'divider line'
-              lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
+              lastReply={reply?._id === currentPost?.replies[currentPost?.replies.length - 1]._id}
             />
           ))}
         </>
