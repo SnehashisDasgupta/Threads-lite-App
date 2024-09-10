@@ -1,5 +1,3 @@
-- Application link: https://threads-lite-app.onrender.com/
-
 # Threads App with Real-Time Chat Functionality
 
 Feature List:
